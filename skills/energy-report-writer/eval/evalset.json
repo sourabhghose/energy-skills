@@ -1,0 +1,17 @@
+[
+  {
+    "task_id": "erw-001",
+    "dataset": "/Volumes/<catalog>/<schema>/eval/energy-report-writer/reliability_annual.csv",
+    "query": "Using /Volumes/<catalog>/<schema>/eval/energy-report-writer/reliability_annual.csv, write a one-page Markdown internal brief on our 2025 distribution reliability (SAIDI, SAIFI, CAIDI) compared with 2024. Save it next to the data as reliability_brief_2025.md."
+  },
+  {
+    "task_id": "erw-002",
+    "dataset": "/Volumes/<catalog>/<schema>/eval/energy-report-writer/reliability_annual.csv",
+    "query": "Draft the reliability section for our annual report to the commission from /Volumes/<catalog>/<schema>/eval/energy-report-writer/reliability_annual.csv and reliability_manifest.json in the same folder. Headline 2025 SAIDI and the five-year trend. LaTeX source is fine; save it as reliability_annual_2025.tex in that folder."
+  },
+  {
+    "task_id": "erw-003",
+    "dataset": "/Volumes/<catalog>/<schema>/eval/energy-report-writer/decline_summary.csv",
+    "query": "Write a short Markdown summary for the asset team of the reserves on wells W-0001 to W-0003 using /Volumes/<catalog>/<schema>/eval/energy-report-writer/decline_summary.csv. Include the total. Save it as asset_summary.md in that folder."
+  }
+]

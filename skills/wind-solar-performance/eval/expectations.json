@@ -1,0 +1,85 @@
+[
+  {
+    "task_id": "wsp-001",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "WTG03 is identified as underperforming by about 7% against the warranted curve",
+        "WTG01's lost energy is attributed to curtailment (setpoint 800 kW), not underperformance",
+        "Wind speed is air-density normalized before comparing with the warranted curve, with the reference density stated",
+        "Power curve uses 0.5 m/s bins on filtered data"
+      ],
+      "guidelines": [
+        "Do not label curtailed intervals as underperformance",
+        "State that nacelle-anemometer results are relative"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"wtg01_curtailment_mwh": 15.553, "underperforming_turbine": "WTG03",
+                        "wtg03_performance_gap_pct": 7.0},
+      "numeric_tolerance_rel": 0.1,
+      "required_tokens": ["curtail", "density"],
+      "forbidden_patterns": ["WTG01 is underperforming"]
+    }
+  },
+  {
+    "task_id": "wsp-002",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "The response states whether availability is time-based or energy-based",
+        "The grid outage on WTG04 is treated explicitly: excluded from (contractual) or counted in (technical) availability, or the user is asked",
+        "WTG04 availability is about 93.1% excluding the grid outage or 90.0% counting it"
+      ],
+      "guidelines": [
+        "Do not silently treat grid outages the same as turbine faults"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"wtg04_time_avail_excl_external": 0.931, "wtg04_time_avail_incl_external": 0.9},
+      "numeric_tolerance_rel": 0.005,
+      "required_tokens": ["grid", "time"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "wsp-003",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "The response states that the file has GHI but no plane-of-array irradiance",
+        "It does not report a GHI-based number as the IEC 61724-1 performance ratio, or clearly labels any such number as not a PR",
+        "It proposes transposition to POA (e.g. pvlib with the array geometry) or a POA sensor"
+      ],
+      "guidelines": [
+        "Do not compute PR from GHI without flagging it"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"pr_computed_from_ghi": false},
+      "numeric_tolerance_rel": 0.0,
+      "required_tokens": ["POA", "GHI"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "wsp-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Degradation is estimated with a year-on-year (or equivalent robust) method on temperature- and irradiance-normalized energy",
+        "Curtailed days are excluded or the response shows they do not bias the estimate",
+        "The estimate is about -0.7 %/year and includes an uncertainty interval"
+      ],
+      "guidelines": [
+        "Do not fit a linear trend to raw AC energy without normalization"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"rd_pct_per_year": -0.7},
+      "numeric_tolerance_rel": 0.15,
+      "required_tokens": ["year", "curtail"],
+      "forbidden_patterns": []
+    }
+  }
+]

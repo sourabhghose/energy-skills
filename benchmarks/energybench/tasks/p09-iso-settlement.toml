@@ -1,0 +1,71 @@
+[task]
+id = "p09-iso-settlement"
+tier = "P"
+title = "Two-settlement energy charges for a load-serving entity"
+domain = "Renewables & Markets"
+intended_skills = ["iso-market-data"]
+det_weight = 0.7
+generator = "markets.p09_iso_settlement"
+instruction = """
+Shadow-settle our load for operating day 2024-08-01: compute the day-ahead energy charge, the real-time balancing
+energy charge (deviations from the day-ahead schedule settled at real-time prices), and the total.
+"""
+rubric = """
+Criterion 1: Two-settlement logic
+    Levels: A=45 B=15 C=0
+      [A]: DA charge = DA MW x DA LMP x 1 h per hour; RT balancing = (metered MW - DA MW) x RT LMP x 5/60 h per 5-minute interval; total = sum.
+      [B]: Right structure but settles deviations hourly with averaged prices.
+      [C]: Settles everything at one price, or misses the deviation logic.
+Criterion 2: MW vs MWh
+    Levels: A=35 B=10 C=0
+      [A]: Converts average MW over a 5-minute interval to MWh (x 1/12) and states it.
+      [B]: Mentions it but applies it inconsistently.
+      [C]: Treats MW as MWh.
+Criterion 3: Reporting
+    Levels: A=20 B=10 C=0
+      [A]: Charges by component with sign convention (positive = charge to the LSE).
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "da_charge_usd"
+kind = "number"
+unit = "$"
+description = "Day-ahead energy charge."
+
+[[answer]]
+key = "rt_balancing_usd"
+kind = "number"
+unit = "$"
+description = "Real-time balancing energy charge (positive = charge)."
+
+[[answer]]
+key = "total_charge_usd"
+kind = "number"
+unit = "$"
+description = "DA charge plus RT balancing charge."
+
+[[check]]
+type = "numeric"
+key = "da_charge_usd"
+rel_tol = 0.002
+points = 25
+
+[[check]]
+type = "numeric"
+key = "rt_balancing_usd"
+rel_tol = 0.01
+points = 35
+
+[[check]]
+type = "numeric"
+key = "total_charge_usd"
+rel_tol = 0.002
+points = 25
+
+[[check]]
+type = "decision"
+patterns = [["5/60", "1/12", "12 intervals", "MW to MWh", "MWh", "five[- ]minute"]]
+example = "5-minute average MW converted to MWh by multiplying by 5/60"
+points = 15

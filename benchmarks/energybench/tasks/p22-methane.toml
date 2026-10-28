@@ -1,0 +1,71 @@
+[task]
+id = "p22-methane"
+tier = "P"
+title = "Annual methane emissions from component counts"
+domain = "Emissions & ESG"
+intended_skills = ["ghg-emissions-calculator"]
+det_weight = 0.7
+generator = "accounting.p22_methane"
+instruction = """
+Estimate 2024 methane emissions (metric tonnes CH4) for each production pad from the equipment inventory, and the
+total in tonnes CO2e using a GWP of 28.
+"""
+rubric = """
+Criterion 1: Whole gas to methane
+    Levels: A=45 B=15 C=0
+      [A]: Converts whole-gas emissions to CH4 with each pad's mole fraction and the stated density (0.0192 kg/scf), using operating hours.
+      [B]: Misses mole fraction or uses 8,760 h for every pad.
+      [C]: Reports whole gas as methane.
+Criterion 2: Method transparency
+    Levels: A=30 B=15 C=0
+      [A]: Shows count x factor x hours x fraction x density per component, by pad.
+      [B]: Partial.
+      [C]: Opaque.
+Criterion 3: Context
+    Levels: A=25 B=10 C=0
+      [A]: Notes the limits of population factors vs measurement (e.g. OGMP 2.0 Level 4/5) and the largest sources.
+      [B]: Some context.
+      [C]: None.
+"""
+
+[[answer]]
+key = "ch4_tonnes_total"
+kind = "number"
+unit = "t CH4"
+description = "Total methane, all pads."
+
+[[answer]]
+key = "ch4_tonnes_by_site"
+kind = "map"
+unit = "t CH4"
+description = "site_id -> methane."
+
+[[answer]]
+key = "co2e_tonnes_gwp28"
+kind = "number"
+unit = "tCO2e"
+description = "Total methane as CO2e at GWP 28."
+
+[[check]]
+type = "numeric"
+key = "ch4_tonnes_total"
+rel_tol = 0.003
+points = 35
+
+[[check]]
+type = "numeric_map"
+key = "ch4_tonnes_by_site"
+rel_tol = 0.005
+points = 35
+
+[[check]]
+type = "numeric"
+key = "co2e_tonnes_gwp28"
+rel_tol = 0.003
+points = 15
+
+[[check]]
+type = "decision"
+patterns = [["mole fraction", "CH4 fraction", "methane content", "gas composition"]]
+example = "Whole-gas factors converted with each pad's CH4 mole fraction"
+points = 15

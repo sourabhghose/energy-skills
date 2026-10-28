@@ -1,0 +1,107 @@
+[task]
+id = "p03-reliability-med"
+tier = "P"
+title = "2024 SAIDI and SAIFI with and without Major Event Days"
+domain = "Power & Utilities"
+intended_skills = ["reliability-metrics"]
+det_weight = 0.7
+generator = "power.p03_reliability_med"
+instruction = """
+The regulator wants our 2024 system SAIDI and SAIFI reported both including and excluding Major Event Days, using
+the IEEE 1366 approach. The OMS extract covers 2019-2024. Report the 2024 Major Event Day threshold you used, the
+2024 Major Event Days, and the four indices.
+"""
+rubric = """
+Criterion 1: Major Event Day threshold
+    Levels: A=40 B=15 C=0
+      [A]: Computes T_MED for 2024 from the daily SAIDI of the five prior years (2019-2023), using the log-normal 2.5 beta method and excluding zero-SAIDI days from the logs, and attributes outages to the day they started.
+      [B]: Uses a threshold method but with the wrong history window, zero days included, or a fixed cut-off.
+      [C]: No MED identification or an arbitrary threshold.
+Criterion 2: Momentary vs sustained interruptions
+    Levels: A=30 B=10 C=0
+      [A]: Excludes momentary interruptions (5 minutes or less) from SAIDI and SAIFI and says so.
+      [B]: Excludes them from SAIDI only, or is unclear.
+      [C]: Counts momentaries as sustained interruptions.
+Criterion 3: Reporting
+    Levels: A=30 B=15 C=0
+      [A]: Reports all four indices with units, the customers-served basis, the MED dates, and the effect of exclusion.
+      [B]: Partial reporting.
+      [C]: Indices missing or unexplained.
+"""
+
+[[answer]]
+key = "t_med_2024_min"
+kind = "number"
+unit = "minutes/day"
+description = "Major Event Day threshold (daily SAIDI) applied to 2024."
+
+[[answer]]
+key = "med_days_2024"
+kind = "list"
+description = "2024 Major Event Days as YYYY-MM-DD."
+
+[[answer]]
+key = "saidi_2024_all_min"
+kind = "number"
+unit = "minutes"
+description = "2024 SAIDI including Major Event Days."
+
+[[answer]]
+key = "saidi_2024_excl_med_min"
+kind = "number"
+unit = "minutes"
+description = "2024 SAIDI excluding Major Event Days."
+
+[[answer]]
+key = "saifi_2024_all"
+kind = "number"
+unit = "interruptions/customer"
+description = "2024 SAIFI including Major Event Days."
+
+[[answer]]
+key = "saifi_2024_excl_med"
+kind = "number"
+unit = "interruptions/customer"
+description = "2024 SAIFI excluding Major Event Days."
+
+[[check]]
+type = "numeric_any"
+key = "t_med_2024_min"
+expected_any = ["t_med_2024_min", "t_med_2024_min_population_sd"]
+rel_tol = 0.02
+points = 15
+
+[[check]]
+type = "set_f1"
+key = "med_days_2024"
+points = 15
+
+[[check]]
+type = "numeric"
+key = "saidi_2024_excl_med_min"
+rel_tol = 0.005
+points = 20
+
+[[check]]
+type = "numeric"
+key = "saidi_2024_all_min"
+rel_tol = 0.005
+points = 10
+
+[[check]]
+type = "numeric"
+key = "saifi_2024_excl_med"
+rel_tol = 0.005
+points = 15
+
+[[check]]
+type = "numeric"
+key = "saifi_2024_all"
+rel_tol = 0.005
+points = 10
+
+[[check]]
+type = "decision"
+patterns = [["momentar"], ["2\\.5", "beta", "MED", "major event"]]
+example = "Momentary interruptions excluded; MED threshold by the 2.5 beta method"
+points = 15

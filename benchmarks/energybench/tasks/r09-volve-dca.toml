@@ -1,0 +1,39 @@
+[task]
+id = "r09-volve-dca"
+tier = "R"
+title = "Decline analysis on Volve well 15/9-F-14"
+domain = "Oil & Gas"
+intended_skills = ["decline-curve-analysis"]
+det_weight = 0.0
+datasets = ["volve"]
+instruction = """
+Using the Volve production data, fit a decline model to the oil rate of well 15/9-F-14 after its peak and estimate remaining oil to an economic limit of 50 Sm3/d, stating any terminal decline you assume.
+"""
+rubric = """
+Criterion 1: Data conditioning
+    Levels: A=35 B=11 C=0
+      [A]: Uses on-stream hours to compute rates, excludes shut-ins and workovers, selects the post-peak decline period and justifies it.
+      [B]: Calendar rates.
+      [C]: Raw volumes.
+Criterion 2: Model choice
+    Levels: A=40 B=13 C=0
+      [A]: Fits a bounded hyperbolic or modified hyperbolic, states b bounds and terminal decline, and notes water-cut and injection effects.
+      [B]: Unbounded fit.
+      [C]: No fit.
+Criterion 3: Reporting
+    Levels: A=25 B=8 C=0
+      [A]: Parameters, forecast plot and units (Sm3).
+      [B]: Partial.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "remaining_oil_sm3"
+kind = "number"
+unit = "Sm3"
+description = "Remaining oil from the end of the data to the economic limit."
+
+[[answer]]
+key = "model_parameters"
+kind = "map"
+description = "Model parameters (qi, Di, b, Dmin)."

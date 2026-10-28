@@ -1,0 +1,47 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# DECISION REGISTRY — choices that belong to the customer, not the agent.
+#
+# kind: substitution  measure exprs contain {placeholder}; the chosen option's `value`
+#                     is substituted at generation time.
+# kind: attestation   the decision fixes what a canonical field MEANS; the mapping must
+#                     deliver that basis. Required when any listed field is mapped.
+# No decision has a default. scripts/generate_semantic_layer.py raises DecisionRequired.
+# ─────────────────────────────────────────────────────────────────────────────
+
+decisions:
+
+  gas_mcf_per_boe:
+    kind: substitution
+    question: "How many Mcf of gas equal one barrel of oil equivalent?"
+    options:
+      energy_6:   { value: "6.0", note: "6 Mcf = 1 boe energy equivalence; the most common US / Canadian convention" }
+      energy_5_8: { value: "5.8", note: "alternative energy-equivalence ratio some operators publish; confirm with reporting policy" }
+    reference: "Operator reporting policy; Canadian NI 51-101 disclosure uses 6:1 and requires stating it"
+
+  gads_weighting:
+    kind: substitution
+    question: "Pool GADS hours across units unweighted, or weighted by unit capacity (MW-weighted)?"
+    options:
+      unweighted:  { value: "1",           note: "every unit-hour counts the same" }
+      mw_weighted: { value: "capacity_mw", note: "large units count more; NERC GADS group statistics offer both" }
+    reference: "NERC GADS Data Reporting Instructions, Appendix F (performance indexes)"
+
+  capacity_basis:
+    kind: attestation
+    question: "Which capacity does capacity_mw carry: nameplate, net summer, net winter, or net dependable?"
+    fields: [capacity_mw]
+    options:
+      nameplate:      { note: "generator nameplate (EIA-860)" }
+      net_summer:     { note: "net summer capacity (EIA-860)" }
+      net_winter:     { note: "net winter capacity (EIA-860)" }
+      net_dependable: { note: "net dependable / maximum capacity (GADS NMC)" }
+    reference: "EIA-860; NERC GADS"
+
+  heat_rate_basis:
+    kind: attestation
+    question: "Is fuel_mmbtu on a higher (HHV) or lower (LHV) heating value basis?"
+    fields: [fuel_mmbtu]
+    options:
+      hhv: { note: "US convention (EIA-923, EPA CAMD)" }
+      lhv: { note: "European / OEM convention; ~10% lower for natural gas" }
+    reference: "EIA-923 instructions"

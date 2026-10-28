@@ -1,0 +1,149 @@
+[
+  {
+    "task_id": "rel-001",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Surfaces the sustained-interruption threshold, customers-served basis, planned-outage handling and MED method as user decisions (or states which it used and why)",
+        "T_MED is derived from the five years before 2024 using ln of non-zero daily SAIDI and exp(alpha + 2.5 beta)",
+        "2024-08-10 is a major event day",
+        "Indices are reported both including and excluding MEDs"
+      ],
+      "guidelines": [
+        "Do not fit the MED threshold on 2024 data",
+        "Do not average CAIDI across circuits"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "saidi_excl_med_min",
+          "truth": "scenarios.excluding_med.saidi_min",
+          "rel_tol": 0.01
+        },
+        {
+          "key": "saidi_min",
+          "truth": "scenarios.all_days.saidi_min",
+          "rel_tol": 0.01
+        }
+      ],
+      "med_days_must_include": [
+        "2024-08-10"
+      ]
+    }
+  },
+  {
+    "task_id": "rel-002",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Surfaces the sustained-interruption threshold, customers-served basis, planned-outage handling and MED method as user decisions (or states which it used and why)",
+        "Customer-minutes are summed per restoration step, not at the final restore time",
+        "Steps restored within the threshold are momentary and count toward MAIFI, not SAIFI"
+      ],
+      "guidelines": [
+        "Do not count every customer in an event as sustained"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "saidi_min",
+          "truth": "scenarios.all_days.saidi_min",
+          "rel_tol": 0.01
+        },
+        {
+          "key": "saifi",
+          "truth": "scenarios.all_days.saifi",
+          "rel_tol": 0.01
+        },
+        {
+          "key": "maifi",
+          "truth": "scenarios.all_days.maifi",
+          "rel_tol": 0.02
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "rel-003",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Events are dated by the local (America/Denver) calendar day, so the evening storm stays on 2024-08-10",
+        "2024-08-10 exceeds T_MED and is a major event day"
+      ],
+      "guidelines": [
+        "Do not date events by UTC day"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "saidi_excl_med_min",
+          "truth": "scenarios.excluding_med.saidi_min",
+          "rel_tol": 0.01
+        }
+      ],
+      "med_days_must_include": [
+        "2024-08-10"
+      ],
+      "med_days_must_exclude": [
+        "2024-08-11"
+      ]
+    }
+  },
+  {
+    "task_id": "rel-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Reclosing operations on one device within 5 minutes are a single momentary event",
+        "MAIFI_E divides momentary events (customers) by customers served"
+      ],
+      "guidelines": [
+        "Do not count each reclose shot as a separate event"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "maifi_e",
+          "truth": "maifi_e_average_basis",
+          "rel_tol": 0.02
+        },
+        {
+          "key": "momentary_events",
+          "truth": "momentary_events",
+          "rel_tol": 0.0
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "rel-005",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Surfaces the sustained-interruption threshold, customers-served basis, planned-outage handling and MED method as user decisions (or states which it used and why)",
+        "SAIDI, SAIFI and CAIDI are ratio-of-measures (MEASURE()/MEASURE()), not stored or averaged ratios",
+        "The fact table includes zero-outage days so the customers-served denominator is correct"
+      ],
+      "guidelines": [
+        "Metric view uses WITH METRICS LANGUAGE YAML"
+      ]
+    },
+    "deterministic_checks": {
+      "required_sql_tokens": [
+        "WITH METRICS",
+        "LANGUAGE YAML",
+        "MEASURE(",
+        "COUNT(DISTINCT"
+      ],
+      "forbidden_patterns": [
+        "AVG(saidi",
+        "AVG(caidi"
+      ]
+    }
+  }
+]

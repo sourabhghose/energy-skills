@@ -1,0 +1,13 @@
+# Adapter: the <prefix>_daily_fact table written by the reliability-metrics skill.
+# Column names match exactly; only the source table needs setting.
+name: reliability_metrics_daily_fact
+entities:
+  reliability_day:
+    source: <catalog>.<schema>.<prefix>_daily_fact   # REVIEW: set the reliability-metrics target prefix
+    fields:
+      circuit_id: circuit_id
+      event_date: event_date
+      customer_minutes: customer_minutes
+      customers_interrupted: customers_interrupted
+      customers_served: customers_served
+      is_med: is_med

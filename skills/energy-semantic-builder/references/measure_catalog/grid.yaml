@@ -1,0 +1,58 @@
+# DOMAIN: grid — T&D losses and IEEE 1366 reliability (daily fact from reliability-metrics).
+domain: grid
+
+metric_views:
+  - name: mv_grid__feeder_period
+    entity: feeder_period
+    grain: feeder_period
+  - name: mv_grid__reliability_day
+    entity: reliability_day
+    grain: reliability_day
+
+measures:
+  - { name: energy_received_mwh, type: atomic, metric_view: mv_grid__feeder_period, entity: feeder_period,
+      expr: "SUM(energy_received_mwh)", unit: MWh, definition: "Energy into the feeder / system." }
+  - { name: energy_delivered_mwh, type: atomic, metric_view: mv_grid__feeder_period, entity: feeder_period,
+      expr: "SUM(energy_delivered_mwh)", unit: MWh, definition: "Energy delivered (billed) to customers." }
+  - name: line_losses_pct
+    type: composite
+    metric_view: mv_grid__feeder_period
+    expr: "100 * (MEASURE(energy_received_mwh) - MEASURE(energy_delivered_mwh)) / NULLIF(MEASURE(energy_received_mwh), 0)"
+    depends_on: [energy_received_mwh, energy_delivered_mwh]
+    unit: "%"
+    definition: "Technical + non-technical losses as a share of energy received."
+    anti_pattern: "Comparing calendar-month sendout to cycle-billed sales without unbilled adjustment."
+
+  - { name: customer_minutes, type: atomic, metric_view: mv_grid__reliability_day, entity: reliability_day,
+      expr: "SUM(customer_minutes)", unit: customer-min, definition: "Sustained customer-minutes interrupted." }
+  - { name: customers_interrupted, type: atomic, metric_view: mv_grid__reliability_day, entity: reliability_day,
+      expr: "SUM(customers_interrupted)", unit: customers, definition: "Sustained customer interruptions." }
+  - { name: customers_served_avg, type: atomic, metric_view: mv_grid__reliability_day, entity: reliability_day,
+      expr: "SUM(customers_served) / COUNT(DISTINCT event_date)", unit: customers,
+      definition: "N_T over the selected days; correct only on a complete date x circuit grid." }
+  - { name: customer_minutes_excl_med, type: atomic, metric_view: mv_grid__reliability_day, entity: reliability_day,
+      expr: "SUM(CASE WHEN NOT is_med THEN customer_minutes ELSE 0 END)", unit: customer-min,
+      definition: "CMI on non-Major-Event days." }
+  - { name: customers_interrupted_excl_med, type: atomic, metric_view: mv_grid__reliability_day, entity: reliability_day,
+      expr: "SUM(CASE WHEN NOT is_med THEN customers_interrupted ELSE 0 END)", unit: customers,
+      definition: "CI on non-Major-Event days." }
+  - { name: saidi_min, type: composite, metric_view: mv_grid__reliability_day,
+      expr: "MEASURE(customer_minutes) / NULLIF(MEASURE(customers_served_avg), 0)",
+      depends_on: [customer_minutes, customers_served_avg], unit: min, reference: "IEEE 1366",
+      definition: "SAIDI, all days." }
+  - { name: saifi, type: composite, metric_view: mv_grid__reliability_day,
+      expr: "MEASURE(customers_interrupted) / NULLIF(MEASURE(customers_served_avg), 0)",
+      depends_on: [customers_interrupted, customers_served_avg], unit: per customer, reference: "IEEE 1366",
+      definition: "SAIFI, all days." }
+  - { name: caidi_min, type: composite, metric_view: mv_grid__reliability_day,
+      expr: "MEASURE(customer_minutes) / NULLIF(MEASURE(customers_interrupted), 0)",
+      depends_on: [customer_minutes, customers_interrupted], unit: min, reference: "IEEE 1366",
+      definition: "CAIDI = CMI / CI.", anti_pattern: "Averaging circuit CAIDIs." }
+  - { name: saidi_excl_med_min, type: composite, metric_view: mv_grid__reliability_day,
+      expr: "MEASURE(customer_minutes_excl_med) / NULLIF(MEASURE(customers_served_avg), 0)",
+      depends_on: [customer_minutes_excl_med, customers_served_avg], unit: min, reference: "IEEE 1366",
+      definition: "SAIDI excluding Major Event Days." }
+  - { name: saifi_excl_med, type: composite, metric_view: mv_grid__reliability_day,
+      expr: "MEASURE(customers_interrupted_excl_med) / NULLIF(MEASURE(customers_served_avg), 0)",
+      depends_on: [customers_interrupted_excl_med, customers_served_avg], unit: per customer, reference: "IEEE 1366",
+      definition: "SAIFI excluding Major Event Days." }

@@ -1,0 +1,2 @@
+# Test-only dependencies for CI (.github/workflows/ci.yml). unit-guard core is stdlib-only.
+pytest==9.0.2

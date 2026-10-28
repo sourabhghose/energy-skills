@@ -1,0 +1,158 @@
+[
+  {
+    "task_id": "map-001",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Source rows are completion-level API-14; wellbores are identified by the first 12 digits (API-12)",
+        "There are 22 distinct wellbores (21 clean plus 423011000000, whose completions disagree on TD) on 18 wells",
+        "Wellbore 423011000000 has conflicting TD values across its completions and needs review"
+      ],
+      "guidelines": [
+        "Does not count completion rows (29) as wellbores",
+        "Does not invent wellbore suffixes for rows without them",
+        "Excludes or reports the malformed API values rather than loading them"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "name": "wells",
+          "value": 18,
+          "tol": 0
+        }
+      ],
+      "required_patterns": [
+        [
+          "\\b2[12]\\b"
+        ],
+        [
+          "423011000000|42-301-10000-00"
+        ]
+      ],
+      "forbidden_patterns": [
+        "\\b(29|32)\\s+wellbores"
+      ]
+    }
+  },
+  {
+    "task_id": "map-002",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "The DATUM column mixes NAD27 (19 rows) and NAD83 (13 rows)",
+        "Coordinates must be transformed per row from their own datum (EPSG:4267 / EPSG:4269) to WGS 84 (EPSG:4326), keeping as-ingested values"
+      ],
+      "guidelines": [
+        "Does not treat the latitude/longitude as already WGS 84",
+        "Does not apply a single datum to all rows",
+        "Names the transformation tool or method (pyproj/PROJ, NADCON) or asks the user to confirm"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "NAD\\s?27|4267"
+        ],
+        [
+          "NAD\\s?83|4269"
+        ],
+        [
+          "WGS\\s?84|4326"
+        ]
+      ],
+      "forbidden_patterns": [
+        "(already|assume[ds]?)\\s+(in\\s+)?WGS\\s?84"
+      ]
+    }
+  },
+  {
+    "task_id": "map-003",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "PR -> PRODUCING, SI -> SHUT_IN, TA -> TEMPORARILY_ABANDONED, P&A -> PLUGGED_AND_ABANDONED, INJ -> INJECTING",
+        "OBS has no standard equivalent in the list and must be confirmed with the data owner (e.g. observation well)"
+      ],
+      "guidelines": [
+        "Does not silently map OBS to an arbitrary status",
+        "Presents the mapping as a reviewable table"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "OBS"
+        ],
+        [
+          "PLUGGED|P&A"
+        ],
+        [
+          "SHUT"
+        ]
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "map-004",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header,energy_catalog.energy_skills_eval.lease_production",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "Oil production in the production table is reported by lease (LEASE_ID), not by well",
+        "Leases hold up to 3 wells, so joining lease volumes to wells repeats each lease volume per well",
+        "Per-well volumes need an allocation method (well tests, equal split, or allocated volumes) chosen by the user"
+      ],
+      "guidelines": [
+        "Does not present a join that double-counts lease volume as per-well production",
+        "Asks for or clearly states the allocation assumption"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "lease"
+        ],
+        [
+          "allocat"
+        ]
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "map-005",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "difficulty": "easy",
+    "expectations": {
+      "expected_facts": [
+        "Three values are malformed: '42-301-1234' (9 digits, formatted), '4230', and 'N/A'",
+        "Two Colorado (state 05) rows were stored as numbers and lost their leading zero (13 digits plus '.0'); they can be restored to 14 digits",
+        "Formats are mixed (dashed and plain) and should be normalized to digits"
+      ],
+      "guidelines": [
+        "Does not 'fix' 42-301-1234 by adding a leading zero (that would make it a California well)"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "42-301-1234"
+        ],
+        [
+          "\\b4230\\b"
+        ],
+        [
+          "leading zero|\\b05\\b|Colorado"
+        ]
+      ],
+      "forbidden_patterns": [
+        "0423011234"
+      ]
+    }
+  }
+]

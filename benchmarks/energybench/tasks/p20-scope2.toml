@@ -1,0 +1,60 @@
+[task]
+id = "p20-scope2"
+tier = "P"
+title = "Scope 2 emissions, location-based and market-based"
+domain = "Emissions & ESG"
+intended_skills = ["ghg-emissions-calculator"]
+det_weight = 0.7
+generator = "accounting.p20_scope2"
+instruction = """
+Compute our 2024 Scope 2 emissions under the GHG Protocol dual-reporting requirement: location-based and
+market-based, in metric tonnes CO2e.
+"""
+rubric = """
+Criterion 1: Location-based method
+    Levels: A=30 B=10 C=0
+      [A]: Applies grid-average subregion factors to all purchased electricity, chooses an eGRID edition deliberately (latest available vs closest year) and discloses it.
+      [B]: Correct method but edition chosen silently.
+      [C]: Wrong method.
+Criterion 2: Market-based hierarchy
+    Levels: A=40 B=15 C=0
+      [A]: Applies retired RECs (zero emissions for covered MWh), the supplier-specific rate where available, and the residual mix for the remainder, not the grid average.
+      [B]: Uses grid average instead of residual mix, or misses one instrument.
+      [C]: Market-based equals location-based.
+Criterion 3: Units and reporting
+    Levels: A=30 B=15 C=0
+      [A]: Converts lb to metric tonnes (2,204.62 lb/t), reports by site and method.
+      [B]: Minor slip.
+      [C]: Short tons or lb reported as tonnes.
+"""
+
+[[answer]]
+key = "scope2_location_tco2e"
+kind = "number"
+unit = "tCO2e"
+description = "2024 location-based Scope 2."
+
+[[answer]]
+key = "scope2_market_tco2e"
+kind = "number"
+unit = "tCO2e"
+description = "2024 market-based Scope 2."
+
+[[check]]
+type = "numeric_any"
+key = "scope2_location_tco2e"
+expected_any = ["scope2_location_tco2e_egrid2023", "scope2_location_tco2e_egrid2022"]
+rel_tol = 0.003
+points = 35
+
+[[check]]
+type = "numeric"
+key = "scope2_market_tco2e"
+rel_tol = 0.003
+points = 45
+
+[[check]]
+type = "decision"
+patterns = [["eGRID ?202[23]", "edition", "vintage"]]
+example = "Used eGRID2023, the latest edition available, for 2024 activity"
+points = 20

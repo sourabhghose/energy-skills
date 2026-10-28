@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "efm-001",
+    "dataset": "/Volumes/<catalog>/energy_skills/eval/energy_foundation_models/feeder_load_30min.parquet",
+    "query": "We have 30-minute feeder load for 20 feeders plus temperature in /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/feeder_load_30min.parquet, and day-ahead temperature forecasts in /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/temp_forecast_30min.parquet. Deploy an open-weight time-series foundation model as a Model Serving endpoint in catalog <catalog>, schema energy_skills that returns day-ahead P10/P50/P90 load forecasts using the temperature forecast. Write the code and explain your decisions. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/outputs/efm-001.md"
+  },
+  {
+    "task_id": "efm-002",
+    "dataset": "/Volumes/<catalog>/energy_skills/eval/energy_foundation_models/lmp_hourly.parquet",
+    "query": "Our trading desk wants to use Salesforce Moirai to forecast hourly day-ahead LMPs from /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/lmp_hourly.parquet and serve it to their trading app. Set it up on Databricks. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/outputs/efm-002.md"
+  },
+  {
+    "task_id": "efm-003",
+    "dataset": "",
+    "query": "Register the latest TimesFM (3.0) from Hugging Face to Unity Catalog so our utility can use it for production load forecasting. What exactly do we need to do? Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/outputs/efm-003.md"
+  },
+  {
+    "task_id": "efm-004",
+    "dataset": "/Volumes/<catalog>/energy_skills/eval/energy_foundation_models/substation_load_local.csv",
+    "query": "Forecast the next 48 hours of hourly substation load with Chronos-Bolt using /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/substation_load_local.csv (timestamps are local wall-clock time from our historian export). Tell me whether it is better than what we have today, which is using last week's value. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/outputs/efm-004.md"
+  },
+  {
+    "task_id": "efm-005",
+    "dataset": "/Volumes/<catalog>/energy_skills/eval/energy_foundation_models/chips/chip_manifest.csv",
+    "query": "We have Sentinel-2 based HLS chips around our transmission corridors listed in /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/chips/chip_manifest.csv. Use Prithvi to map burn scars near our lines after this summer's fires, on Databricks. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_foundation_models/outputs/efm-005.md"
+  }
+]

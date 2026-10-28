@@ -1,0 +1,4 @@
+pandas==2.3.3
+numpy==2.4.2
+# Optional: lower bounds only (exercise importorskip tests in CI); tighten to pins after a CI run.
+h3>=4.0,<5

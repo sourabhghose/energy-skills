@@ -1,0 +1,48 @@
+[task]
+id = "c03-ev-chargers"
+tier = "P"
+title = "DC fast charging ports by city"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c03_ev_chargers"
+instruction = """
+How many cities have more than 40 DC fast charging ports in total, and which city has the most?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "cities_over_40_dc_fast_ports"
+kind = "number"
+description = "Count of cities with more than 40 DC fast ports."
+
+[[answer]]
+key = "top_dc_fast_city"
+kind = "string"
+description = "City with the most DC fast ports."
+
+[[check]]
+type = "exact"
+key = "cities_over_40_dc_fast_ports"
+points = 50
+
+[[check]]
+type = "exact"
+key = "top_dc_fast_city"
+points = 50

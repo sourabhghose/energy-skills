@@ -1,0 +1,39 @@
+[task]
+id = "r07-london-ami-profiles"
+tier = "R"
+title = "Half-hourly smart meter profiles by tariff"
+domain = "Power & Utilities"
+intended_skills = ["ami-interval-analytics"]
+det_weight = 0.0
+datasets = ["london_lcl"]
+instruction = """
+Using the Low Carbon London smart meter data, compare the average weekday half-hourly load profile of households on the dynamic time-of-use tariff with those on the standard tariff in 2013, using at least 500 households per group.
+"""
+rubric = """
+Criterion 1: Time and DST
+    Levels: A=35 B=11 C=0
+      [A]: Handles GMT/BST transitions in half-hourly local timestamps (46/50 periods on clock-change days) and missing or duplicate reads.
+      [B]: Some handling.
+      [C]: None.
+Criterion 2: Sampling and cleaning
+    Levels: A=35 B=11 C=0
+      [A]: Selects households with adequate data completeness, documents exclusions, and handles 'Null' values.
+      [B]: Partial.
+      [C]: None.
+Criterion 3: Comparison
+    Levels: A=30 B=10 C=0
+      [A]: Profiles in kWh per half hour with the peak-window comparison and caveats (selection, weather).
+      [B]: Numbers only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "households_per_group"
+kind = "map"
+description = "tariff -> households used."
+
+[[answer]]
+key = "peak_reduction_pct"
+kind = "number"
+unit = "%"
+description = "Difference in average 16:00-20:00 load, ToU vs standard."

@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "wsp-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wsp/wsp-001",
+    "query": "Here is June 2025 10-minute SCADA for our five 2 MW turbines (/Volumes/energy_catalog/energy_skills/eval/wsp/wsp-001/scada_10min.csv) and the warranted power curve (/Volumes/energy_catalog/energy_skills/eval/wsp/wsp-001/warranted_curve.csv). Which turbines are underperforming and how much energy did each lose? Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/wsp/out/<ARM>/wsp-001/."
+  },
+  {
+    "task_id": "wsp-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wsp/wsp-002",
+    "query": "What was the availability of each turbine in June 2025 using /Volumes/energy_catalog/energy_skills/eval/wsp/wsp-002/scada_10min.csv? Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/wsp/out/<ARM>/wsp-002/."
+  },
+  {
+    "task_id": "wsp-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wsp/wsp-003",
+    "query": "Compute the July 2025 performance ratio of our 2 MWdc / 1.7 MWac solar plant from /Volumes/energy_catalog/energy_skills/eval/wsp/wsp-003/pv_15min.csv. Module temperature coefficient is -0.37%/degC. Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/wsp/out/<ARM>/wsp-003/."
+  },
+  {
+    "task_id": "wsp-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wsp/wsp-004",
+    "query": "Estimate the annual degradation rate of our 2 MWdc / 1.7 MWac solar plant from three years of data in /Volumes/energy_catalog/energy_skills/eval/wsp/wsp-004/pv_15min.csv (gamma -0.37%/degC). Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/wsp/out/<ARM>/wsp-004/."
+  }
+]

@@ -1,0 +1,46 @@
+[task]
+id = "r05-kelmarsh-performance"
+tier = "R"
+title = "Kelmarsh wind farm 2022 performance and lost energy"
+domain = "Renewables & Markets"
+intended_skills = ["wind-solar-performance"]
+det_weight = 0.0
+datasets = ["kelmarsh_2022"]
+instruction = """
+For the six Kelmarsh turbines in 2022, report monthly energy, time-based availability, and lost energy split into downtime, curtailment/derating and underperformance against each turbine's own empirical power curve.
+"""
+rubric = """
+Criterion 1: Signal mapping and units
+    Levels: A=30 B=10 C=0
+      [A]: Uses the signal mapping file to pick power, wind speed and status signals, converts 10-minute kW to energy.
+      [B]: One slip.
+      [C]: Wrong signals.
+Criterion 2: Loss attribution
+    Levels: A=45 B=15 C=0
+      [A]: Builds a power curve from normal-operation data (filtering stops, derates, icing), and attributes losses with explicit rules.
+      [B]: Single bucket of losses.
+      [C]: None.
+Criterion 3: Reporting
+    Levels: A=25 B=8 C=0
+      [A]: Monthly table, assumptions and limits.
+      [B]: Partial.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "annual_energy_mwh"
+kind = "number"
+unit = "MWh"
+description = "2022 farm energy."
+
+[[answer]]
+key = "availability_pct_by_turbine"
+kind = "map"
+unit = "%"
+description = "Turbine -> time-based availability."
+
+[[answer]]
+key = "lost_energy_mwh"
+kind = "map"
+unit = "MWh"
+description = "Category -> lost energy."

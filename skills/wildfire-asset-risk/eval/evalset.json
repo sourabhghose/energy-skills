@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "wf-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_001",
+    "query": "Rank the overhead line segments in /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_001 by wildfire risk using the vegetation, fuel (LANDFIRE FBFM40), slope, ignition and exposure layers (all keyed by H3 res-9 cell). Use H3 res 9 and a 1-ring buffer. Save your final results as JSON to /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/out/<ARM>/wf-001/answer.json with keys top5_segments, decisions."
+  },
+  {
+    "task_id": "wf-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_002",
+    "query": "Our PSPS protocol triggers on gusts of at least 45 mph with relative humidity at or below 20% in high fire-threat districts. Using the forecast in /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_002, which circuits are PSPS candidates for the 14 Oct 2025 event? Save your final results as JSON to /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/out/<ARM>/wf-002/answer.json with keys psps_circuits, first_hour_local, decisions."
+  },
+  {
+    "task_id": "wf-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_003",
+    "query": "We have $300,000 for this season. Using /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_003, with covered conductor (65% effective, $800k/mi), undergrounding (97%, $4M/mi) and enhanced vegetation management (30%, $60k/mi), which segments should we mitigate first? Weight vegetation 0.35, fuel 0.30, slope 0.10, ignition history 0.25; consequence = structures and population; H3 res 9, 1-ring buffer. Save your final results as JSON to /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/out/<ARM>/wf-003/answer.json with keys selected_segments, total_cost_usd, decisions."
+  },
+  {
+    "task_id": "wf-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_004",
+    "query": "Build the wildfire risk ranking for the segments in /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_004 (H3 res 9, 1-ring buffer). Save your final results as JSON to /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/out/<ARM>/wf-004/answer.json with keys top5_segments, data_quality_issues, decisions."
+  },
+  {
+    "task_id": "wf-005",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_005",
+    "query": "Produce a wildfire risk map layer from /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/task_005 that we can share with county emergency managers. Save your final results as JSON to /Volumes/energy_catalog/energy_skills/eval/wildfire-asset-risk/out/<ARM>/wf-005/answer.json with keys shareable_table, columns, decisions."
+  }
+]

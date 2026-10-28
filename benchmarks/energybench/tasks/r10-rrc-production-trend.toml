@@ -1,0 +1,39 @@
+[task]
+id = "r10-rrc-production-trend"
+tier = "R"
+title = "Permian Basin production trend from Texas RRC data"
+domain = "Oil & Gas"
+intended_skills = ["decline-curve-analysis", "unit-guard"]
+det_weight = 0.0
+datasets = ["rrc_pdq"]
+instruction = """
+From the Texas RRC PDQ dump, compute monthly oil (bbl) and casinghead plus gas-well gas (Mcf) for RRC District 8 from January 2020 to the latest complete month, and total BOE at 6:1.
+"""
+rubric = """
+Criterion 1: Data model
+    Levels: A=40 B=13 C=0
+      [A]: Joins the PDQ lease/district tables correctly, combines oil and gas well records, and uses the right volume columns.
+      [B]: Partial join.
+      [C]: Wrong tables.
+Criterion 2: Recency and revisions
+    Levels: A=30 B=10 C=0
+      [A]: Recognises that recent months are incomplete in PDQ and chooses the latest complete month deliberately.
+      [B]: Mentions it.
+      [C]: Uses the last month blindly.
+Criterion 3: Units and BOE
+    Levels: A=30 B=10 C=0
+      [A]: States units and the 6:1 convention.
+      [B]: Unstated.
+      [C]: Wrong.
+"""
+
+[[answer]]
+key = "latest_month"
+kind = "string"
+description = "Latest complete month used (YYYY-MM)."
+
+[[answer]]
+key = "latest_month_boe"
+kind = "number"
+unit = "boe"
+description = "District 8 BOE in that month."

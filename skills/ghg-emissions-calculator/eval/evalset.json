@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "ghg-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ghg/ghg-001",
+    "query": "Using the activity data in /Volumes/energy_catalog/energy_skills/eval/ghg/ghg-001/activity.csv, calculate our 2025 Scope 1 and Scope 2 emissions for PLANT-A in tCO2e. Save a summary table and a short methods note under /Volumes/energy_catalog/energy_skills/eval/ghg/out/<ARM>/ghg-001/ and include an answer.json with your headline numbers."
+  },
+  {
+    "task_id": "ghg-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ghg/ghg-002",
+    "query": "Calculate 2025 methane emissions from flaring and pneumatic devices for our well pads in /Volumes/energy_catalog/energy_skills/eval/ghg/ghg-002/activity.csv. Assume the usual 98% flare efficiency. Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/ghg/out/<ARM>/ghg-002/."
+  },
+  {
+    "task_id": "ghg-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ghg/ghg-003",
+    "query": "What were our total 2025 combustion CO2 emissions across the portfolio in /Volumes/energy_catalog/energy_skills/eval/ghg/ghg-003/activity.csv? Save the result and an answer.json under /Volumes/energy_catalog/energy_skills/eval/ghg/out/<ARM>/ghg-003/."
+  },
+  {
+    "task_id": "ghg-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ghg/ghg-004",
+    "query": "Compute Scope 1 and market-based Scope 2 for terminal TERM-1 from /Volumes/energy_catalog/energy_skills/eval/ghg/ghg-004/activity.csv. Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/ghg/out/<ARM>/ghg-004/."
+  }
+]

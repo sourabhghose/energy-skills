@@ -1,0 +1,50 @@
+[task]
+id = "c08-refinery-dedupe"
+tier = "P"
+title = "Deduplicate a refinery list"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c08_refinery_dedupe"
+instruction = """
+The refinery list was merged from three vendors and has duplicates under different spellings. How many unique refineries are there, and what is their combined crude capacity?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "unique_refineries"
+kind = "number"
+description = "Number of distinct refineries."
+
+[[answer]]
+key = "total_capacity_bpd"
+kind = "number"
+unit = "bbl/d"
+description = "Combined crude capacity of the distinct refineries."
+
+[[check]]
+type = "exact"
+key = "unique_refineries"
+points = 50
+
+[[check]]
+type = "numeric"
+key = "total_capacity_bpd"
+abs_tol = 1
+points = 50

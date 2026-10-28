@@ -1,0 +1,59 @@
+[task]
+id = "p11-boe"
+tier = "P"
+title = "Total BOE across operators reporting gas in different units"
+domain = "Others"
+intended_skills = ["unit-guard"]
+det_weight = 0.7
+generator = "oilgas.p11_boe"
+instruction = """
+Summarise our 2024 production from two operators' statements: total production in MBOE (8/8ths) and the share of
+that total that is gas.
+"""
+rubric = """
+Criterion 1: Units
+    Levels: A=45 B=10 C=0
+      [A]: Converts operator B's MMcf to Mcf (x 1000) before combining, and states every unit.
+      [B]: Units stated but one conversion slip.
+      [C]: Mixes Mcf and MMcf.
+Criterion 2: BOE convention
+    Levels: A=35 B=15 C=0
+      [A]: Converts gas at 6 Mcf per boe (energy equivalence), states the ratio and notes the alternatives (e.g. price-based), counts NGL as barrels.
+      [B]: Uses a ratio without stating it.
+      [C]: Adds Mcf to barrels.
+Criterion 3: Reporting
+    Levels: A=20 B=10 C=0
+      [A]: Totals by product and operator, MBOE clearly defined as thousand boe.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "total_mboe"
+kind = "number"
+unit = "MBOE"
+description = "Total 2024 production, thousand barrels of oil equivalent."
+
+[[answer]]
+key = "gas_share_pct"
+kind = "number"
+unit = "%"
+description = "Gas share of total BOE."
+
+[[check]]
+type = "numeric"
+key = "total_mboe"
+rel_tol = 0.003
+points = 45
+
+[[check]]
+type = "numeric"
+key = "gas_share_pct"
+abs_tol = 0.3
+points = 35
+
+[[check]]
+type = "decision"
+patterns = [["6\\s*:\\s*1", "6 ?mcf", "six", "energy[- ]equivalen"]]
+example = "Gas converted at 6:1 (6 Mcf per boe, energy equivalence)"
+points = 20

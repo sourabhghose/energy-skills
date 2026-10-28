@@ -1,0 +1,88 @@
+[
+  {
+    "task_id": "lf-001",
+    "difficulty": "medium",
+    "truth": {"min_plausible_wape_pct": 1.2},
+    "tolerance_pct": 0,
+    "expectations": {
+      "expected_facts": [
+        "Evaluation is forward in time (rolling origin or a chronological holdout), not a random split",
+        "No load lag shorter than 24 hours is used for a day-ahead forecast",
+        "A seasonal-naive benchmark is reported next to the model",
+        "Reported WAPE/MAPE is at or above the noise floor (~1.2 %); lower values indicate leakage"
+      ],
+      "guidelines": [
+        "State that the backtest uses actual weather",
+        "Treat timestamps as hour-ending UTC or ask"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {},
+      "min_plausible": {"wape": 1.2, "mape": 1.2},
+      "required_action_tokens": ["naive"],
+      "forbidden_patterns": ["train_test_split\\((?![^)]*shuffle\\s*=\\s*False)", "shift\\(\\s*1\\s*\\)"]
+    }
+  },
+  {
+    "task_id": "lf-002",
+    "difficulty": "hard",
+    "truth": {"best_station": "KBBB", "temperature_unit": "C", "hdd_base_c": 15.6, "cdd_base_c": 21.1},
+    "tolerance_pct": 7,
+    "expectations": {
+      "expected_facts": [
+        "Temperatures are in Celsius",
+        "KBBB is the best station (KDDD has 40 % missing hours; KCCC is noisier)",
+        "Heating balance point is about 15-16 C and cooling about 21 C",
+        "The 65 F / 18 C convention is shown as an alternative, not silently applied"
+      ],
+      "guidelines": ["Do not apply 65 as a base to Celsius data"]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"hdd_base_c": 15.6, "cdd_base_c": 21.1},
+      "required_action_tokens": ["KBBB", "Celsius"],
+      "forbidden_patterns": ["65\\s*-\\s*(df\\[)?['\"]?temp"]
+    }
+  },
+  {
+    "task_id": "lf-003",
+    "difficulty": "hard",
+    "truth": {"actual_mwh_2023": 8741420.0, "normalized_mwh_2023": 8806715.0},
+    "tolerance_pct": 1.0,
+    "expectations": {
+      "expected_facts": [
+        "2023 actual energy is about 8.74 million MWh",
+        "Weather-normalized 2023 energy is about 8.81 million MWh (normal weather is cooler)",
+        "Normal degree days are averaged over 2013-2022 per calendar day",
+        "Load timestamps are hour-ending UTC; the year is the local calendar year"
+      ],
+      "guidelines": ["Report the fitted model and its R² or CV(RMSE)"]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"actual_mwh_2023": 8741420.0, "normalized_mwh_2023": 8806715.0},
+      "min_plausible": {},
+      "required_action_tokens": ["2013", "2022"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "lf-004",
+    "difficulty": "medium",
+    "truth": {"nov_2023_mwh": 776147.0, "hours_on_2023_11_05": 25},
+    "tolerance_pct": 0.2,
+    "expectations": {
+      "expected_facts": [
+        "load_kw is in kW and is converted to MW/MWh",
+        "Timestamps are local hour-ending; 2023-11-05 has 25 hours and the repeated hour is kept",
+        "November 2023 energy is about 776,147 MWh",
+        "Thanksgiving (2023-11-23) is treated as a holiday in the forecast"
+      ],
+      "guidelines": ["Do not drop the repeated 01:00 hour on 2023-11-05"]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"nov_2023_mwh": 776147.0},
+      "min_plausible": {},
+      "required_action_tokens": ["kW", "holiday"],
+      "forbidden_patterns": ["drop_duplicates\\("]
+    }
+  }
+]

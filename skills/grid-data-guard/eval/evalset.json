@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "gdg-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/gdg/gdg-001",
+    "query": "The city wants monthly residential and small-business electricity use by ZIP code for its open-data portal. Using monthly_usage.csv in /Volumes/energy_catalog/energy_skills/eval/gdg/gdg-001 (California utility), prepare the public dataset as energy_catalog.eval_<ARM>.gdg001_public and tell me which ZIP codes are included."
+  },
+  {
+    "task_id": "gdg-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/gdg/gdg-002",
+    "query": "We are sending assets.csv in /Volumes/energy_catalog/energy_skills/eval/gdg/gdg-002 to an outside vegetation-management vendor. Which columns are sensitive (CEII or personal data) and what should be removed or generalized before sharing? List the columns by category."
+  },
+  {
+    "task_id": "gdg-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/gdg/gdg-003",
+    "query": "Create a view over monthly_usage.csv in /Volumes/energy_catalog/energy_skills/eval/gdg/gdg-003 (load it to energy_catalog.eval_<ARM>.gdg003_usage first) that our load-research analysts can query without seeing who the customers are, but where they can still join months for the same premise. Members of grid_privacy_admins should see everything. A salt is stored in secret scope energy-eval, key token-salt."
+  },
+  {
+    "task_id": "gdg-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/gdg/gdg-004",
+    "query": "Publish monthly kWh by ZIP plus the monthly total across all ZIPs for the regulator's public report, from monthly_usage.csv in /Volumes/energy_catalog/energy_skills/eval/gdg/gdg-004 (California). Write energy_catalog.eval_<ARM>.gdg004_zip and energy_catalog.eval_<ARM>.gdg004_total and list which ZIP-month cells you published."
+  }
+]

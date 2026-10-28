@@ -1,0 +1,40 @@
+[task]
+id = "r03-egrid-scope2"
+tier = "R"
+title = "Location-based Scope 2 with real eGRID2023 factors"
+domain = "Emissions & ESG"
+intended_skills = ["ghg-emissions-calculator"]
+det_weight = 0.0
+datasets = ["egrid2023"]
+instruction = """
+Using eGRID2023, compute location-based Scope 2 emissions (tCO2e) for a portfolio with 12,000 MWh in RFCE, 8,500 MWh in SRSO, 15,000 MWh in CAMX and 6,000 MWh in ERCT, using subregion total output emission rates for CO2e.
+"""
+rubric = """
+Criterion 1: Correct factor
+    Levels: A=45 B=15 C=0
+      [A]: Reads the subregion sheet, uses the CO2e total output emission rate (lb/MWh) rather than non-baseload or CO2-only, and cites the column.
+      [B]: Uses CO2-only or non-baseload rates.
+      [C]: Wrong sheet or factor.
+Criterion 2: Units
+    Levels: A=30 B=10 C=0
+      [A]: Converts lb to metric tonnes and states the vintage (eGRID2023 = 2023 data).
+      [B]: Minor slip.
+      [C]: Unit error.
+Criterion 3: Transparency
+    Levels: A=25 B=8 C=0
+      [A]: Per-subregion table with MWh x factor.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "scope2_location_tco2e"
+kind = "number"
+unit = "tCO2e"
+description = "Location-based Scope 2 for the portfolio."
+
+[[answer]]
+key = "factors_used"
+kind = "map"
+unit = "lb/MWh"
+description = "Subregion -> CO2e output rate used."

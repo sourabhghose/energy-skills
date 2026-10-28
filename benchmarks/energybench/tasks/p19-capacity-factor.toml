@@ -1,0 +1,58 @@
+[task]
+id = "p19-capacity-factor"
+tier = "P"
+title = "Annual generation and capacity factor from 15-minute output"
+domain = "Renewables & Markets"
+intended_skills = ["wind-solar-performance", "unit-guard"]
+det_weight = 0.7
+generator = "renewables.p19_capacity_factor"
+instruction = """
+Report 2024 net generation (MWh) and capacity factor for each of our three plants.
+"""
+rubric = """
+Criterion 1: Energy from power
+    Levels: A=45 B=10 C=0
+      [A]: Converts 15-minute average power to energy (x 0.25 h), and converts SOLAR-1 from kW to MW.
+      [B]: One of the two handled.
+      [C]: Sums power values as energy.
+Criterion 2: Capacity factor basis
+    Levels: A=35 B=15 C=0
+      [A]: Uses 8,784 hours for leap year 2024 and the stated nameplate, and states the formula.
+      [B]: Uses 8,760 hours.
+      [C]: Wrong formula.
+Criterion 3: Validation
+    Levels: A=20 B=10 C=0
+      [A]: Checks interval counts (35,136 per plant) and plausibility of results by technology.
+      [B]: Some checks.
+      [C]: None.
+"""
+
+[[answer]]
+key = "generation_mwh_by_plant"
+kind = "map"
+unit = "MWh"
+description = "plant_id -> 2024 generation."
+
+[[answer]]
+key = "capacity_factor_pct_by_plant"
+kind = "map"
+unit = "%"
+description = "plant_id -> 2024 capacity factor."
+
+[[check]]
+type = "numeric_map"
+key = "generation_mwh_by_plant"
+rel_tol = 0.002
+points = 45
+
+[[check]]
+type = "numeric_map"
+key = "capacity_factor_pct_by_plant"
+rel_tol = 0.002
+points = 40
+
+[[check]]
+type = "decision"
+patterns = [["8,?784", "leap"]]
+example = "2024 is a leap year: 8,784 hours"
+points = 15

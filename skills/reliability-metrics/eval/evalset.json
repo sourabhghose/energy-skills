@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "rel-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_001",
+    "query": "Using the outage history in /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_001 (restoration_steps.csv, customers_served.csv; utility timezone America/Denver), report our 2024 SAIDI, SAIFI and CAIDI, both including and excluding major event days, and tell me which days were major event days and the threshold used. Save a JSON file of your final numbers to /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/out/<ARM>/rel-001/answer.json. Use keys saidi_min, saifi, caidi_min, saidi_excl_med_min, saifi_excl_med, major_event_days, t_med_minutes, decisions."
+  },
+  {
+    "task_id": "rel-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_002",
+    "query": "Our OMS export in /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_002 records staged restorations as multiple rows per event. Compute 2024 SAIDI, SAIFI and MAIFI for the regulator (timezone America/Denver). Save a JSON file of your final numbers to /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/out/<ARM>/rel-002/answer.json. Use keys saidi_min, saifi, maifi, decisions."
+  },
+  {
+    "task_id": "rel-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_003",
+    "query": "A big storm hit on the evening of 10 Aug 2024 in our Denver service territory. Using /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_003, confirm whether it qualifies as a major event day under IEEE 1366 and give SAIDI with it excluded. Save a JSON file of your final numbers to /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/out/<ARM>/rel-003/answer.json. Use keys major_event_days, t_med_minutes, saidi_excl_med_min, decisions."
+  },
+  {
+    "task_id": "rel-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_004",
+    "query": "From the recloser operation log in /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_004 (customers_served.csv is included), compute 2024 MAIFI_E for the system. Save a JSON file of your final numbers to /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/out/<ARM>/rel-004/answer.json. Use keys maifi_e, momentary_events, decisions."
+  },
+  {
+    "task_id": "rel-005",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_005",
+    "query": "Build a Unity Catalog metric view over the outage data in /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/task_005 so Genie can answer SAIDI, SAIFI and CAIDI by month and circuit, with and without major event days (timezone America/Denver). Write it to energy_catalog.energy_skills_eval.<ARM>_reliability. Save a JSON file of your final numbers to /Volumes/energy_catalog/energy_skills/eval/reliability-metrics/out/<ARM>/rel-005/answer.json. Use keys metric_view_name, metric_view_sql, decisions."
+  }
+]

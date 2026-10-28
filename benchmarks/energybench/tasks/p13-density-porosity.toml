@@ -1,0 +1,47 @@
+[task]
+id = "p13-density-porosity"
+tier = "P"
+title = "Average density porosity across vendor mnemonics"
+domain = "Oil & Gas"
+intended_skills = ["well-log-ingest"]
+det_weight = 0.7
+generator = "subsurface.p13_density_porosity"
+instruction = """
+For each of the four wells, compute the mean density porosity over 5,200-5,300 ft MD (inclusive), using a matrix
+density of 2.65 g/cc and a fluid density of 1.0 g/cc.
+"""
+rubric = """
+Criterion 1: Mnemonic mapping
+    Levels: A=35 B=15 C=0
+      [A]: Identifies the bulk density curve in every file despite different mnemonics (RHOB, DEN, ZDEN, RHOZ) and explains the mapping.
+      [B]: Misses one well.
+      [C]: Only handles RHOB.
+Criterion 2: Units and depth
+    Levels: A=40 B=15 C=0
+      [A]: Converts kg/m3 to g/cc and the metric depth index to feet before selecting the interval; excludes NULL samples.
+      [B]: One of these handled.
+      [C]: None.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: Porosity as a fraction per well with sample counts, formula shown.
+      [B]: Values only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "phid_mean_by_well"
+kind = "map"
+unit = "fraction"
+description = "Well name -> mean density porosity over 5,200-5,300 ft MD."
+
+[[check]]
+type = "numeric_map"
+key = "phid_mean_by_well"
+abs_tol = 0.003
+points = 80
+
+[[check]]
+type = "decision"
+patterns = [["ZDEN", "kg/m", "K/M3", "mnemonic"]]
+example = "ZDEN in kg/m3 converted to g/cc; mnemonics mapped to bulk density"
+points = 20

@@ -1,0 +1,70 @@
+[task]
+id = "p24-gas-units"
+tier = "P"
+title = "Sales-gas energy across US and Canadian unit systems"
+domain = "Others"
+intended_skills = ["unit-guard"]
+det_weight = 0.7
+generator = "accounting.p24_gas_units"
+instruction = """
+Give the 2024 total sales-gas energy for all streams in MMBtu and in GJ, and the total volume in Bcf.
+"""
+rubric = """
+Criterion 1: Volume units
+    Levels: A=40 B=15 C=0
+      [A]: Resolves Mcf (thousand), MMcf (million), Bcf (billion) and e3m3 / 10^3 m3 (thousand cubic metres), converting m3 to scf at 35.3147.
+      [B]: One unit misread (e.g. M as million).
+      [C]: Several.
+Criterion 2: Heating value units
+    Levels: A=35 B=15 C=0
+      [A]: Applies Btu/scf to US streams and MJ/m3 to Canadian streams, with 1 MMBtu = 1.055056 GJ.
+      [B]: One slip.
+      [C]: Applies one heating-value unit to all streams.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: Per-stream conversions shown, base-condition note acknowledged.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "total_energy_mmbtu"
+kind = "number"
+unit = "MMBtu"
+description = "Total sales-gas energy (HHV)."
+
+[[answer]]
+key = "total_energy_gj"
+kind = "number"
+unit = "GJ"
+description = "Total sales-gas energy (HHV)."
+
+[[answer]]
+key = "total_volume_bcf"
+kind = "number"
+unit = "Bcf"
+description = "Total sales-gas volume."
+
+[[check]]
+type = "numeric"
+key = "total_energy_mmbtu"
+rel_tol = 0.003
+points = 35
+
+[[check]]
+type = "numeric"
+key = "total_energy_gj"
+rel_tol = 0.003
+points = 25
+
+[[check]]
+type = "numeric"
+key = "total_volume_bcf"
+rel_tol = 0.003
+points = 25
+
+[[check]]
+type = "decision"
+patterns = [["35\\.31", "e3m3", "MJ/m"]]
+example = "e3m3 converted at 35.3147 scf/m3; Canadian HHV in MJ/m3"
+points = 15

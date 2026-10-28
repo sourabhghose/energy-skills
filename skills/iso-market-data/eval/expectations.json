@@ -1,0 +1,85 @@
+[
+  {
+    "task_id": "iso-001",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "November 2025 has 721 hours in Central prevailing time because of the 2 November fall-back (repeated HE2, DSTFlag=Y)",
+        "On-peak 5x16 excludes weekends and the NERC Thanksgiving holiday (27 November)",
+        "15-minute intervals are time-weighted into hourly prices before block averages",
+        "Peak hours are HE7-HE22 Central prevailing time"
+      ],
+      "guidelines": [
+        "Do not drop or merge the repeated DST hour",
+        "State the peak definition and timezone used"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"hours_in_month": 721, "onpeak_5x16_avg": 41.179, "offpeak_avg": 35.191},
+      "numeric_tolerance_rel": 0.002,
+      "required_tokens": ["DST", "holiday"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "iso-002",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "PJM datetime_beginning_utc marks interval beginning, so the 20:00 hour holds intervals starting 20:00-20:55",
+        "The 20:00 UTC hour is missing three 5-minute intervals and is flagged as incomplete (45 covered minutes)",
+        "The hourly price is the time-weighted mean of the intervals present"
+      ],
+      "guidelines": [
+        "Do not silently fill or ignore missing intervals"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"hour_2025_07_15T20Z_time_weighted": 21.29, "hour_2025_07_15T20Z_covered_minutes": 45},
+      "numeric_tolerance_rel": 0.002,
+      "required_tokens": ["missing", "beginning"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "iso-003",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "NYISO publishes congestion with the opposite sign: LBMP = energy + losses - published congestion",
+        "N.Y.C. has the largest congestion price impact (published congestion most negative)",
+        "The N.Y.C. congestion adder is about +17.9 $/MWh"
+      ],
+      "guidelines": [
+        "Do not rank zones by the published congestion value as if positive meant higher prices"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"zone_highest_congestion_price_impact": "N.Y.C.", "nyc_mean_congestion_adder": 17.9},
+      "numeric_tolerance_rel": 0.02,
+      "required_tokens": ["sign"],
+      "forbidden_patterns": ["WEST had the (largest|highest) congestion"]
+    }
+  },
+  {
+    "task_id": "iso-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Revenue is computed per 5-minute interval as MWh x RT LMP, not hourly average price x hourly MWh",
+        "Charging during negative prices earns revenue (negative MWh x negative price)",
+        "Total RT revenue is about $18,137"
+      ],
+      "guidelines": [
+        "Do not multiply hourly-average prices by hourly energy when interval data exists"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"rt_revenue_usd": 18137.31},
+      "naive_trap": {"naive_hourly_revenue_usd": 14962.85},
+      "numeric_tolerance_rel": 0.005,
+      "required_tokens": ["interval"],
+      "forbidden_patterns": []
+    }
+  }
+]

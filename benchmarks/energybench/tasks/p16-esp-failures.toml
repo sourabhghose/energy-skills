@@ -1,0 +1,45 @@
+[task]
+id = "p16-esp-failures"
+tier = "P"
+title = "Which ESPs are likely to fail in the next two weeks"
+domain = "Oil & Gas"
+intended_skills = ["equipment-pdm"]
+det_weight = 0.7
+generator = "oilgas.p16_esp_failures"
+instruction = """
+Using the ESP historian data and the failure history, list the pumps you expect to fail between 2024-04-16 and
+2024-04-30 so the field team can schedule pulling units. Explain the signals behind each call.
+"""
+rubric = """
+Criterion 1: Signal and tag hygiene
+    Levels: A=40 B=15 C=0
+      [A]: Detects the motor-temperature tag rename and unit change (MTR_TEMP_F to MOTOR_TEMP_C) and the frozen (flat-lined) sensor, and does not treat either as a failure precursor.
+      [B]: Catches one of the two.
+      [C]: Misses both.
+Criterion 2: Failure signature
+    Levels: A=35 B=15 C=0
+      [A]: Learns the pre-failure signature from history (rising motor temperature, vibration and amps, falling intake pressure over about a week) and applies it with a time-ordered evaluation.
+      [B]: Thresholds without using history.
+      [C]: No defensible logic.
+Criterion 3: Actionability
+    Levels: A=25 B=10 C=0
+      [A]: Ranked list with evidence per pump and a confidence or lead-time estimate.
+      [B]: List only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "at_risk_pumps"
+kind = "list"
+description = "pump_id values expected to fail between 2024-04-16 and 2024-04-30."
+
+[[check]]
+type = "set_f1"
+key = "at_risk_pumps"
+points = 80
+
+[[check]]
+type = "decision"
+patterns = [["MOTOR_TEMP_C", "rename", "celsius", "unit change"], ["flat", "frozen", "stuck sensor", "stale", "constant"]]
+example = "P07 tag renamed to MOTOR_TEMP_C (Celsius); P12 sensors frozen, not a failure"
+points = 20

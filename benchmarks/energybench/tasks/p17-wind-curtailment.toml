@@ -1,0 +1,71 @@
+[task]
+id = "p17-wind-curtailment"
+tier = "P"
+title = "Separate curtailment losses from turbine underperformance"
+domain = "Renewables & Markets"
+intended_skills = ["wind-solar-performance"]
+det_weight = 0.7
+generator = "renewables.p17_wind_curtailment"
+instruction = """
+For March 2024, split the wind farm's lost energy into curtailment (grid operator set-point below 2,050 kW) and
+underperformance (everything else while the turbine was available), and tell us which turbine is underperforming.
+Define lost energy per 10-minute interval as max(0, expected - actual), where expected is the reference power
+curve, linearly interpolated, at the measured wind speed. Exclude intervals when the turbine was unavailable.
+"""
+rubric = """
+Criterion 1: Loss attribution
+    Levels: A=40 B=15 C=0
+      [A]: Classifies available intervals by the park set-point and attributes losses to curtailment or underperformance; unavailable intervals are excluded from both.
+      [B]: Attribution with one error (for example unavailable intervals counted as underperformance).
+      [C]: No separation.
+Criterion 2: Energy units
+    Levels: A=35 B=10 C=0
+      [A]: Converts 10-minute average kW to energy (kW x 1/6 h) and reports MWh.
+      [B]: Units stated but conversion slip.
+      [C]: Sums kW as kWh.
+Criterion 3: Diagnosis
+    Levels: A=25 B=10 C=0
+      [A]: Identifies the underperforming turbine from actual/expected ratio outside curtailment, with a plausible cause (yaw, pitch, blade condition) and next steps.
+      [B]: Identifies it without evidence.
+      [C]: Wrong or missing.
+"""
+
+[[answer]]
+key = "curtailment_loss_mwh"
+kind = "number"
+unit = "MWh"
+description = "Lost energy during curtailment, all turbines."
+
+[[answer]]
+key = "underperformance_loss_mwh"
+kind = "number"
+unit = "MWh"
+description = "Lost energy outside curtailment while available, all turbines."
+
+[[answer]]
+key = "underperforming_turbines"
+kind = "list"
+description = "turbine_id values that are underperforming."
+
+[[check]]
+type = "numeric"
+key = "curtailment_loss_mwh"
+rel_tol = 0.01
+points = 30
+
+[[check]]
+type = "numeric"
+key = "underperformance_loss_mwh"
+rel_tol = 0.01
+points = 30
+
+[[check]]
+type = "set_f1"
+key = "underperforming_turbines"
+points = 25
+
+[[check]]
+type = "decision"
+patterns = [["1/6", "10[- ]min", "/ ?6", "kWh"]]
+example = "10-minute average kW converted to kWh by multiplying by 1/6"
+points = 15

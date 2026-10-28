@@ -1,0 +1,40 @@
+[task]
+id = "c04-tariff-bill"
+tier = "P"
+title = "Residential bill under a tiered tariff"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c04_tariff_bill"
+instruction = """
+What is the total monthly bill, including tax, for a customer who uses 1,250 kWh on this tariff?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "bill_usd"
+kind = "number"
+unit = "$"
+description = "Total bill including the customer charge and tax."
+
+[[check]]
+type = "numeric"
+key = "bill_usd"
+abs_tol = 0.02
+points = 100

@@ -1,0 +1,60 @@
+[task]
+id = "p10-dca-eur"
+tier = "P"
+title = "EUR from monthly production with a terminal decline"
+domain = "Oil & Gas"
+intended_skills = ["decline-curve-analysis"]
+det_weight = 0.6
+generator = "oilgas.p10_dca_eur"
+instruction = """
+Estimate the oil EUR for each of our six horizontal wells and in total, for the annual reserves update. Company
+guidelines: Arps decline with a terminal (minimum) decline of 10 %/yr nominal, an economic limit of 5 bbl/d, and a
+maximum well life of 30 years from first production. Show the fitted parameters per well.
+"""
+rubric = """
+Criterion 1: Model and terminal decline
+    Levels: A=40 B=15 C=0
+      [A]: Fits a hyperbolic model on rate vs producing time and switches to the 10 %/yr terminal decline (modified hyperbolic), bounding b to a defensible range and stating it.
+      [B]: Fits hyperbolic but applies the terminal decline incorrectly or not at all.
+      [C]: Exponential-only or no fit.
+Criterion 2: Data conditioning
+    Levels: A=35 B=15 C=0
+      [A]: Converts monthly volumes to daily rates using days_on, excludes shut-in months from the fit, and uses producing time rather than calendar time.
+      [B]: Uses calendar-day rates or keeps zeros in the fit.
+      [C]: Fits raw monthly volumes including zeros.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: Parameters (qi, Di, b), EUR by well with units, cumulative-to-date vs remaining, and plots or residuals.
+      [B]: EUR only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "eur_total_mbbl"
+kind = "number"
+unit = "Mbbl"
+description = "Total oil EUR for the six wells (thousand barrels)."
+
+[[answer]]
+key = "eur_by_well_mbbl"
+kind = "map"
+unit = "Mbbl"
+description = "well_id -> oil EUR (thousand barrels)."
+
+[[check]]
+type = "numeric"
+key = "eur_total_mbbl"
+rel_tol = 0.12
+points = 40
+
+[[check]]
+type = "numeric_map"
+key = "eur_by_well_mbbl"
+rel_tol = 0.15
+points = 40
+
+[[check]]
+type = "decision"
+patterns = [["b[- ]?(factor|value|exponent)", "\\bb\\s*(bound|cap|limit|<|<=|≤)"], ["shut[- ]?in", "days[_ ]on", "producing (days|time)"]]
+example = "b-factor bounded to 0-2; shut-in months excluded using days_on"
+points = 20

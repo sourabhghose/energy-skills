@@ -1,0 +1,85 @@
+[
+  {
+    "task_id": "ug-001",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Gas volumes are converted from scf at 60 F / 14.696 psia to Sm3 at 15 C / 101.325 kPa with the temperature correction (about 0.02826 Sm3 per scf), not 0.0283168",
+        "The standard-conditions basis is taken from the contract excerpt or confirmed with the user",
+        "The boe total names its gas conversion method (6 Mcf = 1 boe energy equivalence) or asks the user to choose",
+        "Daily rates (Mcf/d, bbl/d) are summed over days to get volumes"
+      ],
+      "guidelines": [
+        "Every reported number carries its unit",
+        "MSm3 is million standard cubic metres (SI mega), not thousand"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": ["summary.md"],
+      "required_action_tokens": ["14.696", "boe", "MSm3"],
+      "forbidden_patterns": ["35\\.3147", "0\\.0283168\\b"],
+      "numeric_answers": {
+        "gas_total_msm3": {"value": 10.152022, "rel_tol": 0.0005},
+        "boe_total": {"value": 137920.25, "rel_tol": 0.001}
+      }
+    }
+  },
+  {
+    "task_id": "ug-002",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Energy is MW x 0.25 h per 15-minute interval summed, not the sum of MW",
+        "2026-03-08 (US spring-forward) has 23 local hours (92 intervals) and no intervals are fabricated or dropped",
+        "Daily totals are computed on local calendar days using the timezone offsets in the timestamps"
+      ],
+      "guidelines": ["Do not resample to a fixed 96 intervals per day"]
+    },
+    "deterministic_checks": {
+      "required_artifacts": ["daily_energy.csv"],
+      "required_action_tokens": ["0.25", "MWh", "DST"],
+      "forbidden_patterns": ["96 intervals per day for every day"],
+      "numeric_answers": {
+        "energy_mwh": {"value": 21157.615, "rel_tol": 0.0001}
+      }
+    }
+  },
+  {
+    "task_id": "ug-003",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "The agent flags that 'tons' is ambiguous (short, long, or metric) and asks or states the assumption with its effect (~10%)",
+        "The agent asks which GWP set to use (AR4/AR5/AR6) or states the regime-required one",
+        "N2O in pounds is converted to tonnes before applying the GWP"
+      ],
+      "guidelines": ["Never silently treat 'tons' as metric tonnes"]
+    },
+    "deterministic_checks": {
+      "required_artifacts": ["co2e_monthly.csv"],
+      "required_action_tokens": ["short ton", "GWP"],
+      "forbidden_patterns": [],
+      "numeric_answers": {
+        "total_tco2e": {"value": 78436.49, "rel_tol": 0.002}
+      }
+    }
+  },
+  {
+    "task_id": "ug-004",
+    "difficulty": "easy",
+    "expectations": {
+      "expected_facts": [
+        "7,500 Btu/kWh corresponds to about 45.5% efficiency on the same heating-value basis as the heat rate",
+        "US heat rates are usually HHV while European efficiencies are usually LHV, so the comparison needs a common basis",
+        "With LHV/HHV ~0.90 for natural gas, 52% LHV is about 46.8% HHV, so the units are close and the European unit is slightly better on that assumption"
+      ],
+      "guidelines": ["Ask or state the HHV/LHV basis before concluding"]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [],
+      "required_action_tokens": ["HHV", "LHV", "45."],
+      "forbidden_patterns": [],
+      "numeric_answers": {}
+    }
+  }
+]

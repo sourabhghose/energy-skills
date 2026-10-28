@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "ea-001",
+    "dataset": "/Volumes/<catalog>/energy_skills/eval/energy_accelerators/permian_monthly_production.csv",
+    "query": "We want a production optimization app for our Permian wells with decline-curve analytics and a natural-language assistant for our engineers. Monthly production is in /Volumes/<catalog>/energy_skills/eval/energy_accelerators/permian_monthly_production.csv. What is the fastest way to get this on Databricks? Give exact steps. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_accelerators/outputs/ea-001.md"
+  },
+  {
+    "task_id": "ea-002",
+    "dataset": "",
+    "query": "Our plant data lives in an on-prem AVEVA (OSIsoft) PI Server. How do we get the PI tags into Databricks? Is there a Lakeflow connector? Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_accelerators/outputs/ea-002.md"
+  },
+  {
+    "task_id": "ea-003",
+    "dataset": "",
+    "query": "Our distribution utility sets pole and transformer replacement budgets by age. We want a 10-year replacement plan that shows the SAIDI/SAIFI improvement per capital dollar. Is there something on Databricks we can start from? Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_accelerators/outputs/ea-003.md"
+  },
+  {
+    "task_id": "ea-004",
+    "dataset": "",
+    "query": "I want to use Databricks Mosaic to tessellate a DEM to H3 and score flood risk for our substations. Show me how to set it up. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_accelerators/outputs/ea-004.md"
+  },
+  {
+    "task_id": "ea-005",
+    "dataset": "",
+    "query": "Is there a Databricks solution accelerator for EPA Subpart W methane emissions reporting for our gas gathering and boosting facilities? Point me to it. Save your final answer as markdown to /Volumes/<catalog>/energy_skills/eval/energy_accelerators/outputs/ea-005.md"
+  }
+]

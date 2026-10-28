@@ -1,0 +1,121 @@
+<!-- Template: Guide Sub-type — for decision frameworks and best practices.
+     For code/MCP-centric entries, use SKILL_TEMPLATE.md or SKILL_TEMPLATE_TOOLKIT.md. -->
+---
+name: guide-name-here
+description: <Domain or decision-space keyword> <what it covers>. <When to consult>. <Disambiguation>
+# Description rules (AGENTS.md):
+#   - Length ≤ 1024 chars; first 120 chars carry discovery weight
+#   - Lead with the domain or decision-space keyword — NOT stop verbs
+# category: one of "Power & Utilities" | "Oil & Gas" | "Renewables & Markets" | "Emissions & ESG" | Others (quote values containing &)
+category: "Oil & Gas"
+summary: "<one-line outcome for the README and landing-page tables>"
+version: 1.0.0
+author: your name
+license: Databricks License
+---
+
+# Skill Name Here
+
+## Overview
+
+Brief description of this guide (2-3 sentences). What domain does it cover? Why does it matter for research decisions?
+
+## When to Use
+
+<!-- 5+ items. Write from the USER'S TASK perspective, not keyword-matching. -->
+
+- Use case 1: description
+- Use case 2: description
+- Use case 3: description
+- Use case 4: description
+- Use case 5: description
+
+## Key Concepts
+
+### Concept 1
+Definition and explanation.
+
+### Concept 2
+Definition and explanation.
+
+### Concept 3
+Definition and explanation.
+
+## Decision Framework
+
+When to choose between different approaches:
+
+```
+Question: What is your goal?
+├── Goal A → Approach 1 (see Best Practices §1)
+├── Goal B → Approach 2 (see Best Practices §2)
+└── Goal C
+    ├── Sub-condition X → Approach 3
+    └── Sub-condition Y → Approach 4
+```
+
+| Scenario | Recommended Approach | Rationale |
+|----------|---------------------|-----------|
+| Scenario 1 | Approach A | Reason |
+| Scenario 2 | Approach B | Reason |
+| Scenario 3 | Approach C | Reason |
+
+## Best Practices
+
+1. **Practice 1**: Description and rationale
+2. **Practice 2**: Description and rationale
+3. **Practice 3**: Description and rationale
+4. **Practice 4**: Description and rationale
+5. **Practice 5**: Description and rationale
+
+## Troubleshooting
+
+1. **Pitfall 1**: What goes wrong and why
+   - *How to avoid*: Preventive measure
+2. **Pitfall 2**: What goes wrong and why
+   - *How to avoid*: Preventive measure
+3. **Pitfall 3**: What goes wrong and why
+   - *How to avoid*: Preventive measure
+4. **Pitfall 4**: What goes wrong and why
+   - *How to avoid*: Preventive measure
+5. **Pitfall 5**: What goes wrong and why
+   - *How to avoid*: Preventive measure
+
+## Workflow
+
+1. **Step 1: Planning**
+   - Substep 1a
+   - Decision point: If X → proceed to Step 2. If Y → revisit.
+2. **Step 2: Execution**
+   - Substep 2a
+3. **Step 3: Review**
+   - Substep 3a
+
+## Protocol Guidelines
+
+1. **Guideline 1**: Description
+2. **Guideline 2**: Description
+3. **Guideline 3**: Description
+4. **Guideline 4**: Description
+
+## Guardrails
+
+1. Avoid retrying more than 3 times
+2. Ask to confirm before undertaking a heavy workload
+
+## References
+
+- [Reference 1](https://example.com) — Description
+- [Reference 2](https://example.com) — Description
+- [Review / textbook](https://example.com) — Description
+
+## Related Skills
+
+- `skill-name-1` — Brief connection to this guide
+- `skill-name-2` — Brief connection to this guide
+
+## Companion Assets
+
+<!-- Optional. Only include if assets/ exists. -->
+
+- `assets/template.ext` — Description of what this asset provides

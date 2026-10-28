@@ -1,0 +1,95 @@
+[
+  {
+    "task_id": "ami-001",
+    "difficulty": "easy",
+    "truth": {"fleet_kwh_2024_11_03": 1729.704, "intervals_per_meter_2024_11_03": 100},
+    "tolerance_pct": 0.1,
+    "expectations": {
+      "expected_facts": [
+        "Timestamps are treated as interval-ending local time (America/Chicago) or the agent asks",
+        "2024-11-03 is a 25-hour day with 100 intervals per meter; no reads from the repeated 01:xx hour are dropped",
+        "Fleet energy on 2024-11-03 is about 1729.7 kWh"
+      ],
+      "guidelines": [
+        "Do not drop_duplicates on local timestamps",
+        "Ask about or state the timezone and interval convention before converting"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"fleet_kwh_2024_11_03": 1729.704},
+      "required_action_tokens": ["America/Chicago", "100"],
+      "forbidden_patterns": ["drop_duplicates\\(\\s*\\[?['\"]?(meter_id['\"]?,\\s*['\"]?)?read_ts"]
+    }
+  },
+  {
+    "task_id": "ami-002",
+    "difficulty": "hard",
+    "truth": {"fleet_net_kwh_june": 36639.7, "fleet_export_kwh_june": 2630.5,
+              "planted_spikes": 25, "planted_negative_errors": 15},
+    "tolerance_pct": 0.5,
+    "expectations": {
+      "expected_facts": [
+        "Negative reads on net-metered premises (premises.csv) are kept as export",
+        "Negative reads on non-net-metered premises are treated as errors",
+        "Reads above the 200 A x 240 V service capacity (~48 kW) are invalidated",
+        "Short gaps are estimated and estimated intervals are labelled as estimated",
+        "Fleet net June consumption is about 36,640 kWh and export about 2,630 kWh"
+      ],
+      "guidelines": [
+        "Do not apply a single fleet-wide rule to negative values",
+        "Ask the user about estimation limits before filling long gaps"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"fleet_net_kwh_june": 36639.7, "fleet_export_kwh_june": 2630.5},
+      "required_action_tokens": ["net_metered", "estimated"],
+      "forbidden_patterns": ["abs\\(\\s*kwh\\s*\\)", "kwh\\s*<\\s*0\\s*\\]\\s*=\\s*0"]
+    }
+  },
+  {
+    "task_id": "ami-003",
+    "difficulty": "hard",
+    "truth": {"fleet_kwh_true": 9997.2, "exchanged_meter": "MTR0005"},
+    "tolerance_pct": 0.2,
+    "expectations": {
+      "expected_facts": [
+        "Register reads are differenced into interval kWh",
+        "Register rollovers at 100,000 kWh (5 dials) are corrected, not discarded",
+        "MTR0005's mid-period drop is a meter exchange/reset, not a rollover",
+        "Fleet consumption is about 9,997 kWh"
+      ],
+      "guidelines": [
+        "Do not sum cumulative register values",
+        "Ask for or state the register dial capacity"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"fleet_kwh_true": 9997.2},
+      "required_action_tokens": ["rollover", "MTR0005"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "ami-004",
+    "difficulty": "medium",
+    "truth": {"fleet_kwh_march": 30773.6, "source_estimated_reads": 300,
+              "intervals_per_meter_2024_03_10": 92, "nonexistent_labels": 30},
+    "tolerance_pct": 0.2,
+    "expectations": {
+      "expected_facts": [
+        "Reads with quality 'E' are upstream estimates and are excluded from the metered share",
+        "2024-03-10 has 92 intervals; labels at 02:xx local time on that day cannot exist and are flagged",
+        "Fleet March consumption is about 30,774 kWh"
+      ],
+      "guidelines": [
+        "Do not treat the spring-forward day's 4 absent intervals as missing data",
+        "Report the estimated share explicitly"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_answers": {"fleet_kwh_march": 30773.6},
+      "required_action_tokens": ["92", "estimated"],
+      "forbidden_patterns": []
+    }
+  }
+]

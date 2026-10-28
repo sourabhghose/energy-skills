@@ -1,0 +1,88 @@
+[
+  {
+    "task_id": "ghg-001",
+    "difficulty": "easy",
+    "expectations": {
+      "expected_facts": [
+        "Natural gas in Mcf is converted to mmBtu with an HHV (about 1.026 mmBtu/Mcf) before applying 53.06 kg CO2/mmBtu",
+        "Scope 2 is reported both location-based and market-based",
+        "The 2,000 MWh covered by RECs carry zero market-based emissions and the remainder uses a residual mix rate",
+        "The GWP set and emission-factor sources with vintages are stated"
+      ],
+      "guidelines": [
+        "Do not report a single Scope 2 number",
+        "Do not apply the location-based grid rate to REC-covered MWh in the market-based figure"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"scope1_co2_t": 699.49, "scope2_location_t": 1664.46, "scope2_market_t": 1121.02},
+      "numeric_tolerance_rel": 0.02,
+      "required_tokens": ["location", "market", "eGRID"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "ghg-002",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "The response notes that EPA's 2024 Subpart W revision replaced the single 98% flare assumption with tiered destruction efficiencies (98/95/92%) from RY2025",
+        "Flare methane is computed from gas volume, CH4 mole fraction and (1 - destruction efficiency) at standard density 0.0192 kg/scf",
+        "Pneumatic device methane uses device count x hours x a cited whole-gas factor x CH4 fraction",
+        "The GWP set used for CO2e is stated and was confirmed or asked"
+      ],
+      "guidelines": [
+        "Surface the flare efficiency choice and its impact instead of silently using 98%",
+        "Cite the source and vintage of every emission factor"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"flare_ch4_t_tier1": 9.982, "flare_ch4_t_tier2": 24.954, "flare_ch4_t_tier3": 39.926,
+                        "pneumatic_ch4_t": 70.842},
+      "numeric_tolerance_rel": 0.03,
+      "required_tokens": ["tier", "Subpart W"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "ghg-003",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "The response identifies that the total depends on the organizational boundary (operational control vs equity share)",
+        "Operated assets total and equity-share total are both computed or the user is asked to choose",
+        "Non-operated assets are excluded under operational control and included at working interest under equity share"
+      ],
+      "guidelines": [
+        "Do not sum all facilities at 100% without stating a consolidation approach"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"operational_control_co2_t": 10908.39, "equity_share_co2_t": 11899.78},
+      "numeric_tolerance_rel": 0.01,
+      "required_tokens": ["operational control", "equity"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "ghg-004",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "The natural gas quantity in m3 is flagged as needing reference conditions (it is not silently converted)",
+        "No residual mix rate exists for the US national average, so the market-based figure is flagged as a location-based fallback or the user is asked",
+        "Location-based Scope 2 uses the eGRID2023 US average rate"
+      ],
+      "guidelines": [
+        "Do not invent a residual mix rate",
+        "Do not assume m3 reference conditions without stating them"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric_truth": {"scope2_location_t": 417.6},
+      "numeric_tolerance_rel": 0.02,
+      "required_tokens": ["m3", "residual"],
+      "forbidden_patterns": []
+    }
+  }
+]

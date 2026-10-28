@@ -1,0 +1,127 @@
+[
+  {
+    "task_id": "sem-001",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Gas reported in cubic metres is converted to Mcf (1 Mcf = 28.3168 m3) before boe conversion",
+        "The Mcf-per-boe ratio is asked for or explicitly stated",
+        "Field boe/d = total boe / calendar days, not an average of per-well rates"
+      ],
+      "guidelines": [
+        "Do not treat gas_m3 as Mcf"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "boe_per_day",
+          "truth_any": [
+            "boe_per_day.energy_6",
+            "boe_per_day.energy_5_8"
+          ],
+          "rel_tol": 0.005
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "sem-002",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Water cut = total water / (total oil + total water), a ratio of sums",
+        "The average of per-well water cuts (~72%) is not the field water cut (~55%)"
+      ],
+      "guidelines": [
+        "Do not average well-level ratios"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "water_cut_pct",
+          "truth_any": [
+            "water_cut_pct"
+          ],
+          "rel_tol": 0.005
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "sem-003",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "EAF = (AH - EUDH - EPDH - ESEDH) / PH",
+        "Unweighted vs MW-weighted pooling is surfaced as a choice (or both are reported) because 50 MW peakers and 800 MW units differ widely"
+      ],
+      "guidelines": [
+        "MW-weighting multiplies each term by NMC before summing; it is not an NMC-weighted average of unit EAFs"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "eaf_pct",
+          "truth_any": [
+            "eaf_pct.unweighted",
+            "eaf_pct.mw_weighted"
+          ],
+          "rel_tol": 0.005
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "sem-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Capacity factor = net MWh / sum(NMC x period hours)",
+        "2024 has 8,784 hours and the data's period hours already reflect DST"
+      ],
+      "guidelines": [
+        "Do not use 8760 hours"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "key": "capacity_factor_pct",
+          "truth_any": [
+            "capacity_factor_pct"
+          ],
+          "rel_tol": 0.001
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "sem-005",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Rates are composite measures MEASURE(a)/MEASURE(b), not stored or averaged ratios",
+        "Gas is converted from m3 in the conforming view",
+        "Decisions on boe conversion and GADS pooling are surfaced"
+      ],
+      "guidelines": [
+        "Metric views use WITH METRICS LANGUAGE YAML"
+      ]
+    },
+    "deterministic_checks": {
+      "required_sql_tokens": [
+        "WITH METRICS",
+        "LANGUAGE YAML",
+        "MEASURE("
+      ],
+      "forbidden_patterns": [
+        "AVG(water_cut",
+        "AVG(eaf",
+        "AVG(capacity_factor"
+      ]
+    }
+  }
+]

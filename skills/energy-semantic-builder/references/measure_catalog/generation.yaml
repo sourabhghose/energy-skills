@@ -1,0 +1,84 @@
+# DOMAIN: generation — unit output, efficiency, and NERC GADS availability.
+domain: generation
+
+metric_views:
+  - name: mv_generation__unit_period
+    entity: unit_period
+    grain: unit_period
+
+measures:
+  - { name: net_generation_mwh, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(net_mwh)", unit: MWh, definition: "Net generation (gross minus station service).",
+      reference: "EIA-923" }
+  - { name: gross_generation_mwh, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(gross_mwh)", unit: MWh, definition: "Gross generation at the generator terminals." }
+  - { name: capacity_mwh, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(capacity_mw * period_hours)", unit: MWh,
+      definition: "Maximum possible output over the period at the confirmed capacity basis." }
+  - { name: fuel_consumed_mmbtu, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(fuel_mmbtu)", unit: MMBtu, definition: "Fuel heat input at the confirmed heating-value basis." }
+  - { name: period_hours_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(period_hours * {gads_weighting})", unit: h, decisions: [gads_weighting],
+      definition: "PH, pooled per the GADS weighting decision." }
+  - { name: service_hours_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(service_hours * {gads_weighting})", unit: h, decisions: [gads_weighting], definition: "SH, pooled." }
+  - { name: available_hours_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(available_hours * {gads_weighting})", unit: h, decisions: [gads_weighting], definition: "AH, pooled." }
+  - { name: forced_outage_hours_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(forced_outage_hours * {gads_weighting})", unit: h, decisions: [gads_weighting], definition: "FOH, pooled." }
+  - { name: equivalent_derated_hours_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM((eudh + epdh + esedh) * {gads_weighting})", unit: h, decisions: [gads_weighting],
+      definition: "EUDH + EPDH + ESEDH, pooled (for EAF)." }
+  - { name: efdh_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(efdh * {gads_weighting})", unit: h, decisions: [gads_weighting], definition: "EFDH, pooled." }
+  - { name: efdhrs_w, type: atomic, metric_view: mv_generation__unit_period, entity: unit_period,
+      expr: "SUM(efdhrs * {gads_weighting})", unit: h, decisions: [gads_weighting], definition: "EFDHRS, pooled." }
+  - name: capacity_factor_pct
+    type: composite
+    metric_view: mv_generation__unit_period
+    expr: "100 * MEASURE(net_generation_mwh) / NULLIF(MEASURE(capacity_mwh), 0)"
+    depends_on: [net_generation_mwh, capacity_mwh]
+    unit: "%"
+    definition: "Net capacity factor: net MWh / (capacity x hours)."
+    anti_pattern: "Averaging unit capacity factors; mixing nameplate and net capacity; 8760 h in a leap year."
+    reference: "EIA Electric Power Monthly glossary"
+  - name: net_heat_rate_btu_per_kwh
+    type: composite
+    metric_view: mv_generation__unit_period
+    expr: "1000 * MEASURE(fuel_consumed_mmbtu) / NULLIF(MEASURE(net_generation_mwh), 0)"
+    depends_on: [fuel_consumed_mmbtu, net_generation_mwh]
+    unit: Btu/kWh
+    definition: "Net heat rate: fuel Btu per net kWh (MMBtu x 1e6 / (MWh x 1e3))."
+    anti_pattern: "Dividing by gross generation; mixing HHV and LHV; averaging unit heat rates."
+    reference: "EIA-923"
+  - name: auxiliary_load_pct
+    type: composite
+    metric_view: mv_generation__unit_period
+    expr: "100 * (MEASURE(gross_generation_mwh) - MEASURE(net_generation_mwh)) / NULLIF(MEASURE(gross_generation_mwh), 0)"
+    depends_on: [gross_generation_mwh, net_generation_mwh]
+    unit: "%"
+    definition: "Station service share of gross generation."
+  - name: eaf_pct
+    type: composite
+    metric_view: mv_generation__unit_period
+    expr: "100 * (MEASURE(available_hours_w) - MEASURE(equivalent_derated_hours_w)) / NULLIF(MEASURE(period_hours_w), 0)"
+    depends_on: [available_hours_w, equivalent_derated_hours_w, period_hours_w]
+    unit: "%"
+    definition: "Equivalent availability factor: (AH - (EUDH + EPDH + ESEDH)) / PH."
+    reference: "NERC GADS DRI Appendix F (2026)"
+  - name: efor_pct
+    type: composite
+    metric_view: mv_generation__unit_period
+    expr: "100 * (MEASURE(forced_outage_hours_w) + MEASURE(efdh_w)) / NULLIF(MEASURE(forced_outage_hours_w) + MEASURE(service_hours_w) + MEASURE(efdhrs_w), 0)"
+    depends_on: [forced_outage_hours_w, efdh_w, service_hours_w, efdhrs_w]
+    unit: "%"
+    definition: "Equivalent forced outage rate: (FOH + EFDH) / (FOH + SH + EFDHRS). Pumped storage / synchronous condensers: map pumping and synchronous condensing hours into service_hours. Not EFORd (needs demand factors)."
+    reference: "NERC GADS DRI Appendix F (2026)"
+  - name: for_pct
+    type: composite
+    metric_view: mv_generation__unit_period
+    expr: "100 * MEASURE(forced_outage_hours_w) / NULLIF(MEASURE(forced_outage_hours_w) + MEASURE(service_hours_w), 0)"
+    depends_on: [forced_outage_hours_w, service_hours_w]
+    unit: "%"
+    definition: "Forced outage rate: FOH / (FOH + SH); include synchronous condensing and pumping hours in service_hours where they apply."
+    reference: "NERC GADS DRI Appendix F (2026)"

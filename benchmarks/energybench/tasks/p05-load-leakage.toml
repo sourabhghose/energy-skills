@@ -1,0 +1,75 @@
+[task]
+id = "p05-load-leakage"
+tier = "P"
+title = "Day-ahead load forecast backtest without leakage"
+domain = "Power & Utilities"
+intended_skills = ["load-forecaster"]
+det_weight = 0.6
+generator = "power.p05_load_leakage"
+instruction = """
+Build a day-ahead hourly system load forecast and tell us how accurate it would have been. Forecasts are issued at
+10:00 local time for all 24 hours of the next day. Backtest on the last 90 days of the data (local dates
+2024-10-03 to 2024-12-31) and report MAPE. Save the hourly backtest forecasts to ./forecast.csv.
+"""
+rubric = """
+Criterion 1: No look-ahead
+    Levels: A=45 B=15 C=0
+      [A]: Uses only information available at 10:00 the day before: the temperature forecast, not observed temperature, and load lags of at least the issue-time gap (no 1-hour lag); train data ends before the test window.
+      [B]: Time-ordered split but some leaky feature (observed temperature or short lags).
+      [C]: Random split or clear leakage.
+Criterion 2: Calendar and weather effects
+    Levels: A=30 B=15 C=0
+      [A]: Models temperature non-linearly (heating and cooling), hour of day in local time, weekday/weekend and the listed holidays.
+      [B]: Some of these.
+      [C]: None.
+Criterion 3: Evaluation
+    Levels: A=25 B=10 C=0
+      [A]: Reports MAPE on the stated window, compares to a naive baseline (e.g. same hour last week), and shows error by hour or month.
+      [B]: MAPE only.
+      [C]: No credible evaluation.
+"""
+
+[[answer]]
+key = "mape_pct"
+kind = "number"
+unit = "%"
+description = "Mean absolute percentage error of the day-ahead forecast over the backtest window."
+
+[[answer]]
+key = "test_start"
+kind = "string"
+description = "First local date of the backtest window (YYYY-MM-DD)."
+
+[[answer]]
+key = "features"
+kind = "list"
+description = "Names of the input columns or engineered features the final model used."
+
+[[check]]
+type = "numeric_range"
+key = "mape_pct"
+low = "mape_low_pct"
+high = "mape_high_pct"
+points = 35
+
+[[check]]
+type = "exact"
+key = "test_start"
+points = 15
+
+[[check]]
+type = "forbid_in_list"
+key = "features"
+patterns = ["temp_actual", "actual_temp", "lag_?1h?$", "lag_?1_?h", "shift\\(1\\)", "^load_lag_?1$"]
+points = 25
+
+[[check]]
+type = "file_exists"
+path = "forecast.csv"
+points = 10
+
+[[check]]
+type = "decision"
+patterns = [["leak", "look[- ]?ahead", "issue time", "available at", "forecast temperature", "temp_forecast"]]
+example = "Used temp_forecast, not observed temperature, to avoid look-ahead leakage"
+points = 15

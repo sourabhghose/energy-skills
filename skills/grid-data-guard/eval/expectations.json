@@ -1,0 +1,83 @@
+[
+  {
+    "task_id": "gdg-001",
+    "difficulty": "hard",
+    "truth": {"released_zips": ["94101", "94102", "94103"], "suppressed_zips": ["94104", "94105"]},
+    "tolerance_pct": 0,
+    "expectations": {
+      "expected_facts": [
+        "The CPUC 15/15 rule applies: at least 15 customers per cell and no customer above 15 % of the cell's load",
+        "94104 is suppressed (9 customers)",
+        "94105 is suppressed because one large customer dominates its load",
+        "Customers are counted as distinct premises, not rows",
+        "No names, addresses, account numbers, or coordinates are published"
+      ],
+      "guidelines": ["Do not publish the largest customer's usage or share"]
+    },
+    "deterministic_checks": {
+      "set_answers": {"released_zips": ["94101", "94102", "94103"]},
+      "required_action_tokens": ["15", "94104", "94105"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "gdg-002",
+    "difficulty": "medium",
+    "truth": {"ceii_columns": ["feeder", "substation_name", "relay_pickup_a", "notes"],
+              "pii_columns": ["contact"], "geo_columns": ["latitude", "longitude"]},
+    "tolerance_pct": 0,
+    "expectations": {
+      "expected_facts": [
+        "feeder and substation_name are grid topology (CEII)",
+        "relay_pickup_a is a protection setting (CEII)",
+        "notes contains IP addresses (SCADA/network addressing; CEII/BCSI)",
+        "contact contains phone numbers (personal data)",
+        "latitude/longitude are precise and should be generalized for the vendor"
+      ],
+      "guidelines": ["Inspect values, not only column names"]
+    },
+    "deterministic_checks": {
+      "set_answers": {},
+      "required_action_tokens": ["notes", "relay_pickup_a", "contact", "feeder"],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "gdg-003",
+    "difficulty": "medium",
+    "truth": {"must_tokenize": ["account_number", "premise_id"]},
+    "tolerance_pct": 0,
+    "expectations": {
+      "expected_facts": [
+        "account_number and premise_id are replaced by salted tokens using the secret, so months still join",
+        "customer_name, service_address, lat, lon are hidden unless in grid_privacy_admins",
+        "Access is controlled with is_account_group_member('grid_privacy_admins') in a view, not a copied table"
+      ],
+      "guidelines": ["Never use an unsalted hash of an account number", "Never print the salt"]
+    },
+    "deterministic_checks": {
+      "set_answers": {},
+      "required_action_tokens": ["is_account_group_member", "secret("],
+      "forbidden_patterns": ["sha2\\(\\s*`?(account_number|premise_id)`?\\s*,", "md5\\("]
+    }
+  },
+  {
+    "task_id": "gdg-004",
+    "difficulty": "hard",
+    "truth": {"primary_suppressed_zip": "94104", "complementary_zip": "94103"},
+    "tolerance_pct": 0,
+    "expectations": {
+      "expected_facts": [
+        "94104 fails the 15-customer threshold and is suppressed",
+        "Because the monthly total is published, one more cell per month (94103, the smallest remaining) is suppressed so 94104 cannot be derived by subtraction",
+        "12 ZIP-month cells (94101 and 94102 for six months) are published"
+      ],
+      "guidelines": ["Explain complementary suppression to the user"]
+    },
+    "deterministic_checks": {
+      "set_answers": {"published_zips": ["94101", "94102"]},
+      "required_action_tokens": ["94104", "94103", "complementary"],
+      "forbidden_patterns": []
+    }
+  }
+]

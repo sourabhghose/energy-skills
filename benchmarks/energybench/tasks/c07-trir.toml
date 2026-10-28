@@ -1,0 +1,50 @@
+[task]
+id = "c07-trir"
+tier = "P"
+title = "Contractor total recordable incident rate"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c07_trir"
+instruction = """
+Compute the 2024 total recordable incident rate (TRIR, per 200,000 hours worked) across all contractors, and name the contractor with the highest TRIR.
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "trir_overall"
+kind = "number"
+unit = "per 200,000 h"
+description = "TRIR across all contractors."
+
+[[answer]]
+key = "highest_trir_contractor"
+kind = "string"
+description = "Contractor with the highest TRIR."
+
+[[check]]
+type = "numeric"
+key = "trir_overall"
+abs_tol = 0.01
+points = 60
+
+[[check]]
+type = "exact"
+key = "highest_trir_contractor"
+points = 40

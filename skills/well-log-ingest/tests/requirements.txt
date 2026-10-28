@@ -1,0 +1,5 @@
+# Test-only dependencies for CI (.github/workflows/ci.yml).
+numpy==2.4.2
+pandas==2.3.3
+# Optional: lower bounds only (exercise importorskip tests in CI); tighten to pins after a CI run.
+lasio>=0.31

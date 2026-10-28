@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "map-001",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "query": "Build a wellbore master table from the vendor well header in energy_catalog.energy_skills_eval.vendor_well_header, aligned to OSDU master-data--Wellbore. How many wellbores and how many wells are there? Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/osdu-ppdm-mapper/outputs/map-001.md"
+  },
+  {
+    "task_id": "map-002",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "query": "Our GIS team needs the surface locations of the wells in energy_catalog.energy_skills_eval.vendor_well_header in WGS 84. Prepare them. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/osdu-ppdm-mapper/outputs/map-002.md"
+  },
+  {
+    "task_id": "map-003",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "query": "Map the WELL_STATUS codes in energy_catalog.energy_skills_eval.vendor_well_header to standard well status values for our OSDU/PPDM master data. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/osdu-ppdm-mapper/outputs/map-003.md"
+  },
+  {
+    "task_id": "map-004",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header,energy_catalog.energy_skills_eval.lease_production",
+    "query": "Give me 2026 oil production per well by joining energy_catalog.energy_skills_eval.lease_production to the well header in energy_catalog.energy_skills_eval.vendor_well_header. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/osdu-ppdm-mapper/outputs/map-004.md"
+  },
+  {
+    "task_id": "map-005",
+    "dataset": "energy_catalog.energy_skills_eval.vendor_well_header",
+    "query": "Which API numbers in energy_catalog.energy_skills_eval.vendor_well_header are malformed or need fixing before we load them? Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/osdu-ppdm-mapper/outputs/map-005.md"
+  }
+]

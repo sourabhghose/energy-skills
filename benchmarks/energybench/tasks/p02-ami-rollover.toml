@@ -1,0 +1,78 @@
+[task]
+id = "p02-ami-rollover"
+tier = "P"
+title = "Quarterly consumption from cumulative register reads"
+domain = "Power & Utilities"
+intended_skills = ["ami-interval-analytics"]
+det_weight = 0.7
+generator = "power.p02_ami_rollover"
+instruction = """
+We need Q1 2025 consumption (2025-01-01 00:00 to 2025-04-01 00:00) for 40 service points billed from daily
+cumulative register reads. Report total kWh for all service points, which service points had a register rollover,
+which had a meter exchange, and how many reads were estimated rather than actual.
+"""
+rubric = """
+Criterion 1: Register arithmetic
+    Levels: A=40 B=15 C=0
+      [A]: Converts cumulative reads to consumption by differencing, handles the 5-digit rollover at 99999, and bridges meter exchanges with the old meter's final read and the new meter's initial read.
+      [B]: Handles some but not all of rollover and exchanges.
+      [C]: Sums raw register values, or differences without handling rollover or exchanges.
+Criterion 2: Estimated reads
+    Levels: A=30 B=10 C=0
+      [A]: Distinguishes estimated from actual reads, avoids treating small negative deltas around estimates as rollovers, and notes that the quarter total depends only on the boundary actual reads.
+      [B]: Counts estimated reads but does not consider their effect.
+      [C]: Ignores read quality.
+Criterion 3: Validation
+    Levels: A=30 B=15 C=0
+      [A]: Checks for negative or implausible daily deltas, lists the affected service points, and reconciles the total.
+      [B]: Some validation.
+      [C]: None.
+"""
+
+[[answer]]
+key = "total_kwh_q1"
+kind = "number"
+unit = "kWh"
+description = "Total Q1 2025 consumption across all 40 service points."
+
+[[answer]]
+key = "rollover_service_points"
+kind = "list"
+description = "service_point_id values whose register rolled over during the quarter."
+
+[[answer]]
+key = "exchange_service_points"
+kind = "list"
+description = "service_point_id values that had a meter exchange."
+
+[[answer]]
+key = "estimated_read_count"
+kind = "number"
+description = "Number of reads flagged as estimated."
+
+[[check]]
+type = "numeric"
+key = "total_kwh_q1"
+abs_tol = 1
+points = 40
+
+[[check]]
+type = "set_f1"
+key = "rollover_service_points"
+points = 20
+
+[[check]]
+type = "set_f1"
+key = "exchange_service_points"
+points = 15
+
+[[check]]
+type = "exact"
+key = "estimated_read_count"
+points = 10
+
+[[check]]
+type = "decision"
+patterns = [["estimat"], ["rollover", "roll over", "wrap", "99999"]]
+example = "Estimated reads kept but not trusted for daily values; rollover at 99999 corrected by adding 100000"
+points = 15

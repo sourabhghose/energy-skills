@@ -1,0 +1,128 @@
+[
+  {
+    "task_id": "erw-001",
+    "dataset": "/Volumes/<catalog>/<schema>/eval/energy-report-writer/reliability_annual.csv",
+    "difficulty": "easy",
+    "expectations": {
+      "expected_facts": [
+        "2025 SAIDI excluding Major Event Days is 109.8 min (or rounded 110 min)",
+        "2024 SAIDI excluding Major Event Days is 112.9 min (or rounded 113 min)",
+        "The brief states whether values include or exclude Major Event Days"
+      ],
+      "guidelines": [
+        "Every number carries a unit",
+        "The brief must not state any reliability figure that is not in the input table",
+        "The brief must say it is a draft requiring review"
+      ],
+      "allowed_minutes": [
+        109.8,
+        112.9,
+        115.2,
+        115.6,
+        116.3,
+        116.4,
+        117.6,
+        118.6,
+        121.0,
+        121.4,
+        122.6,
+        126.3,
+        131.9,
+        144.0,
+        167.7,
+        188.7,
+        241.5
+      ],
+      "minute_tolerance": 1.0
+    },
+    "deterministic_checks": {
+      "required_artifacts": [
+        "reliability_brief_2025.md"
+      ],
+      "required_phrases": [
+        "requires review by a qualified"
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "erw-002",
+    "dataset": "/Volumes/<catalog>/<schema>/eval/energy-report-writer/reliability_annual.csv",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "2025 SAIDI excluding Major Event Days is 109.8 min",
+        "2025 SAIDI including Major Event Days is 241.5 min",
+        "Two Major Event Days in 2025 identified with the IEEE 1366 2.5 beta method",
+        "The five-year trend uses one consistent MED basis"
+      ],
+      "ground_truth_estimates": {
+        "saidi_2025_excl_med": {
+          "value": 109.8,
+          "tolerance": 0.5,
+          "unit": "min"
+        },
+        "saidi_2025_incl_med": {
+          "value": 241.5,
+          "tolerance": 0.5,
+          "unit": "min"
+        }
+      },
+      "guidelines": [
+        "Must report 2025 SAIDI both including and excluding Major Event Days, or ask which basis to headline",
+        "Must not mix MED-included and MED-excluded values within the trend",
+        "Must state it is not legal or regulatory advice and requires qualified review"
+      ],
+      "required_decisions": [
+        "reliability_basis"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [
+        "reliability_annual_2025.tex"
+      ],
+      "required_phrases": [
+        "requires review by a qualified",
+        "not legal, regulatory, or investment advice"
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "erw-003",
+    "dataset": "/Volumes/<catalog>/<schema>/eval/energy-report-writer/decline_summary.csv",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "Total decline-analysis EUR for the three wells is 1,354.7 Mbbl (or rounded 1,355 Mbbl)",
+        "Volumes are technical forecasts from decline analysis, not classified reserves"
+      ],
+      "ground_truth_estimates": {
+        "total_eur_mbbl": {
+          "value": 1354.7,
+          "tolerance": 1.0,
+          "unit": "Mbbl"
+        }
+      },
+      "guidelines": [
+        "Must not label the volumes as proved, probable, possible, 1P, 2P, 3P, PDP, PUD, or reserves",
+        "Must explain that reserves classification needs a qualified reserves evaluator",
+        "Must state the decline model and b-factor bound from the input"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [
+        "asset_summary.md"
+      ],
+      "required_phrases": [
+        "not a reserves report"
+      ],
+      "forbidden_patterns": [
+        "\\bproved\\b",
+        "\\b[123]P\\b",
+        "\\bPUD\\b",
+        "\\bPDP\\b"
+      ]
+    }
+  }
+]

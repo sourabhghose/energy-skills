@@ -1,0 +1,155 @@
+[
+  {
+    "task_id": "npt-001",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Rig R7 NPT is 15 hours: EQUIPMENT_RIG 3, LOST_CIRCULATION 4, FISHING 8",
+        "Rig R9 NPT is 28 hours: WELL_CONTROL 9, EQUIPMENT_DOWNHOLE 7, STUCK_PIPE 5, WAIT_MATERIALS 5, EQUIPMENT_RIG 2",
+        "Rig R7 has 6 hours of weather downtime reported separately, not inside NPT",
+        "Stuck pipe on W-104 (coded as trips) and losses on W-101 (coded as circulating) are found from the remarks"
+      ],
+      "guidelines": [
+        "Does not count the negated 'No losses observed' remark or the offset-well losses as NPT",
+        "Separates rig-equipment failure from downhole-tool (MWD) failure"
+      ]
+    },
+    "deterministic_checks": {
+      "numeric": [
+        {
+          "name": "r7_total_npt_hr",
+          "value": 15,
+          "tol": 0.5
+        },
+        {
+          "name": "r9_total_npt_hr",
+          "value": 28,
+          "tol": 0.5
+        },
+        {
+          "name": "r7_weather_hr",
+          "value": 6,
+          "tol": 0.5
+        }
+      ],
+      "required_patterns": [
+        [
+          "\\bR7\\b"
+        ],
+        [
+          "\\bR9\\b"
+        ],
+        [
+          "weather"
+        ]
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "npt-002",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Only W-101 had lost circulation, 4 hours (partial losses 60 bbl/hr, LCM pill)"
+      ],
+      "guidelines": [
+        "Does not list W-102: its remarks say 'No losses observed' and describe losses on offset well W-099",
+        "Cites the remark text as evidence for W-101"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "W-101"
+        ]
+      ],
+      "forbidden_patterns": [
+        "W-102[^\\n]{0,80}(lost circulation|losses)[^\\n]{0,40}\\d+(\\.\\d+)?\\s*(h|hr|hours)"
+      ],
+      "wells_required": [
+        "W-101"
+      ],
+      "wells_forbidden": [
+        "W-102",
+        "W-105"
+      ]
+    }
+  },
+  {
+    "task_id": "npt-003",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "W-102 on 2026-11-03 is short: 22 of 24 hours logged (2-hour gap at end of day)",
+        "W-105 on 2026-11-04 has a 1-hour overlap between consecutive lines",
+        "2026-11-01 is the DST fall-back day with 25 elapsed hours; 25 logged hours is correct"
+      ],
+      "guidelines": [
+        "Does not flag the 25-hour logs on 2026-11-01 as errors",
+        "Lists exactly the two failing well-days"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "W-102"
+        ],
+        [
+          "2026-11-03|Nov(ember)?\\.? 3"
+        ],
+        [
+          "W-105"
+        ],
+        [
+          "2026-11-04|Nov(ember)?\\.? 4"
+        ],
+        [
+          "overlap"
+        ]
+      ],
+      "forbidden_patterns": [
+        "2026-11-01[^\\n]{0,80}(error|fail|does not reconcile|doesn't reconcile|short|long)"
+      ]
+    }
+  },
+  {
+    "task_id": "npt-004",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "NPT % depends on whether waiting on weather counts as NPT: Acme Drilling is 15/505 h = 3.0 % excluding weather, 21/505 h = 4.2 % including its 6 h of weather downtime",
+        "Borealis Rigs NPT is 28 of 508 logged hours (about 5.5 %); it has no weather downtime"
+      ],
+      "guidelines": [
+        "Surfaces the weather-policy choice (and/or reporting-day start, code-vs-text combine) to the user instead of choosing silently, or states the choice explicitly as an assumption",
+        "Reports how many well-days failed 24-hour reconciliation next to the percentage"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "Acme"
+        ],
+        [
+          "Borealis"
+        ],
+        [
+          "weather"
+        ]
+      ],
+      "forbidden_patterns": [],
+      "numeric": [
+        {
+          "name": "borealis_npt_pct",
+          "value": 5.5,
+          "tol": 0.3
+        }
+      ]
+    }
+  }
+]

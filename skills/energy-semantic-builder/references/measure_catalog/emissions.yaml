@@ -1,0 +1,39 @@
+# DOMAIN: emissions — intensity KPIs over facility emissions + activity data.
+domain: emissions
+
+metric_views:
+  - name: mv_emissions__facility_period
+    entity: facility_period
+    grain: facility_period
+
+measures:
+  - { name: co2e_total_t, type: atomic, metric_view: mv_emissions__facility_period, entity: facility_period,
+      expr: "SUM(co2e_t)", unit: tCO2e, definition: "CO2-equivalent emissions (GWP basis from the inventory)." }
+  - { name: ch4_total_t, type: atomic, metric_view: mv_emissions__facility_period, entity: facility_period,
+      expr: "SUM(ch4_t)", unit: tCH4, definition: "Methane emissions (mass)." }
+  - { name: net_generation_mwh_em, type: atomic, metric_view: mv_emissions__facility_period, entity: facility_period,
+      expr: "SUM(net_mwh)", unit: MWh, definition: "Net generation of the emitting facilities." }
+  - { name: production_boe_total, type: atomic, metric_view: mv_emissions__facility_period, entity: facility_period,
+      expr: "SUM(production_boe)", unit: boe, definition: "Hydrocarbon production of the emitting facilities." }
+  - name: co2e_intensity_kg_per_mwh
+    type: composite
+    metric_view: mv_emissions__facility_period
+    expr: "1000 * MEASURE(co2e_total_t) / NULLIF(MEASURE(net_generation_mwh_em), 0)"
+    depends_on: [co2e_total_t, net_generation_mwh_em]
+    unit: kgCO2e/MWh
+    definition: "Generation emissions intensity (ratio of sums)."
+    anti_pattern: "Averaging plant intensities; dividing by gross generation."
+  - name: co2e_intensity_kg_per_boe
+    type: composite
+    metric_view: mv_emissions__facility_period
+    expr: "1000 * MEASURE(co2e_total_t) / NULLIF(MEASURE(production_boe_total), 0)"
+    depends_on: [co2e_total_t, production_boe_total]
+    unit: kgCO2e/boe
+    definition: "Upstream emissions intensity (ratio of sums)."
+  - name: ch4_intensity_kg_per_boe
+    type: composite
+    metric_view: mv_emissions__facility_period
+    expr: "1000 * MEASURE(ch4_total_t) / NULLIF(MEASURE(production_boe_total), 0)"
+    depends_on: [ch4_total_t, production_boe_total]
+    unit: kgCH4/boe
+    definition: "Methane intensity by mass per boe. OGCI / OGMP volumetric intensity (% of marketed gas) is a different metric."

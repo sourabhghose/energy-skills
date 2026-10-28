@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "dca-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/dca/task_001",
+    "query": "Fit decline curves to the 30 oil wells in /Volumes/energy_catalog/energy_skills/eval/dca/task_001/monthly_production.csv and give me per-well and total oil EUR. Save the per-well table to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/dca-001/eur_by_well.csv."
+  },
+  {
+    "task_id": "dca-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/dca/task_002",
+    "query": "Build a P10/P50/P90 oil type curve and EUR distribution normalized to a 10,000 ft lateral for the wells in /Volumes/energy_catalog/energy_skills/eval/dca/task_002 (production plus well headers). Save the curve to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/dca-002/type_curve.csv."
+  },
+  {
+    "task_id": "dca-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/dca/task_001",
+    "query": "Well 42329000070000 in /Volumes/energy_catalog/energy_skills/eval/dca/task_001/monthly_production.csv looks odd. Forecast its monthly oil to the economic limit and explain anything you excluded. Save the forecast to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/dca-003/forecast.csv."
+  },
+  {
+    "task_id": "dca-004",
+    "dataset": "none",
+    "query": "Our type well has qi = 1,000 bbl/d, a 72% first-year decline, and b = 1.2. What Di do I put into the Arps hyperbolic equation, and what is the first-year cumulative oil?"
+  }
+]

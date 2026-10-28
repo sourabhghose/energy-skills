@@ -1,0 +1,21 @@
+# Adapter: NERC GADS performance records (one row per unit per month), as exported from a
+# GADS reporting system. Hours fields use GADS abbreviations.
+name: nerc_gads_performance
+entities:
+  unit_period:
+    source: <catalog>.<schema>.gads_performance   # REVIEW
+    fields:
+      unit_id: unit_code
+      period_start: "make_date(report_year, report_month, 1)"
+      period_hours: period_hours         # PH — REVIEW: DST months have 743 / 745 hours
+      capacity_mw: net_maximum_capacity  # capacity_basis = net_dependable (NMC)
+      gross_mwh: gross_actual_generation
+      net_mwh: net_actual_generation
+      service_hours: service_hours
+      available_hours: available_hours
+      forced_outage_hours: forced_outage_hours
+      eudh: equivalent_unplanned_derated_hours
+      epdh: equivalent_planned_derated_hours
+      esedh: equivalent_seasonal_derated_hours
+      efdh: equivalent_forced_derated_hours
+      efdhrs: equivalent_forced_derated_hours_rs

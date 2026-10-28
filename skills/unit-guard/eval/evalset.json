@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "ug-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/unit_guard/task_001",
+    "query": "Our Norwegian partner wants Q1 gas from the three wells in /Volumes/energy_catalog/energy_skills/eval/unit_guard/task_001 reported in MSm3, and total production in boe. Give both totals and save a short summary to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/ug-001/summary.md."
+  },
+  {
+    "task_id": "ug-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/unit_guard/task_002",
+    "query": "Compute total energy generated (MWh) from the 15-minute plant output in /Volumes/energy_catalog/energy_skills/eval/unit_guard/task_002, and the energy per local calendar day. Save a table to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/ug-002/daily_energy.csv."
+  },
+  {
+    "task_id": "ug-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/unit_guard/task_003",
+    "query": "Total the 2025 CO2e for the facility in /Volumes/energy_catalog/energy_skills/eval/unit_guard/task_003. Save the monthly breakdown to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/ug-003/co2e_monthly.csv."
+  },
+  {
+    "task_id": "ug-004",
+    "dataset": "none",
+    "query": "Our gas turbine runs at a 7,500 Btu/kWh heat rate. A European competitor advertises 52% efficiency for a similar unit. Which is more efficient?"
+  }
+]

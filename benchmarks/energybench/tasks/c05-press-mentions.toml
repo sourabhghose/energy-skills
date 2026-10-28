@@ -1,0 +1,39 @@
+[task]
+id = "c05-press-mentions"
+tier = "P"
+title = "Hydrogen mentions in press releases"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c05_press_mentions"
+instruction = """
+How many press releases mention hydrogen (any capitalisation) in each year?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "hydrogen_releases_by_year"
+kind = "map"
+description = "Year -> number of releases mentioning hydrogen."
+
+[[check]]
+type = "numeric_map"
+key = "hydrogen_releases_by_year"
+abs_tol = 0
+points = 100

@@ -1,0 +1,73 @@
+{
+  "_note": "Conventions as commonly published in each ISO's public price reports. status=verify_before_use: confirm against the ISO's current report specification for the exact report you load. Edit here, not in code.",
+  "CAISO": {
+    "timezone": "America/Los_Angeles", "observes_dst": true,
+    "native_timestamp": "OASIS INTERVALSTARTTIME_GMT / INTERVALENDTIME_GMT (UTC); local reports use hour-ending in Pacific prevailing time",
+    "default_convention": "interval_beginning",
+    "da_interval_minutes": 60, "rt_interval_minutes": 5,
+    "price_term": "LMP", "components": ["energy", "congestion", "loss", "ghg"], "congestion_sign": 1,
+    "notes": "LMP = energy (MCE) + congestion (MCC) + loss (MCL) + GHG (MGHG, WEIM). Real-time has 15-minute FMM and 5-minute RTD markets.",
+    "docs": "http://oasis.caiso.com/mrioasis/logon.do ; https://www.caiso.com/library/oasis-interface-specification",
+    "status": "verify_before_use"
+  },
+  "ERCOT": {
+    "timezone": "America/Chicago", "observes_dst": true,
+    "native_timestamp": "DeliveryDate + HourEnding (01:00-24:00) [+ DeliveryInterval 1-4] + DSTFlag (Y on the repeated fall-back hour), Central prevailing time",
+    "default_convention": "interval_ending",
+    "da_interval_minutes": 60, "rt_interval_minutes": 15,
+    "price_term": "SPP", "components": [], "congestion_sign": 1,
+    "notes": "Settlement Point Prices (SPP) at resource nodes, hubs and load zones. RT SPP is a 15-minute time-weighted value of 5-minute SCED LMPs plus real-time adders (ORDC reserve price adder, reliability deployment adder). No marginal loss component in ERCOT nodal prices. SCED bus LMPs are not settlement prices.",
+    "docs": "https://www.ercot.com/mp/data-products ; https://developer.ercot.com/",
+    "status": "verify_before_use"
+  },
+  "PJM": {
+    "timezone": "America/New_York", "observes_dst": true,
+    "native_timestamp": "datetime_beginning_utc / datetime_beginning_ept (interval beginning)",
+    "default_convention": "interval_beginning",
+    "da_interval_minutes": 60, "rt_interval_minutes": 5,
+    "price_term": "LMP", "components": ["energy", "congestion", "loss"], "congestion_sign": 1,
+    "notes": "total_lmp = system_energy_price + congestion_price + marginal_loss_price. Five-minute real-time settlement since 2021-02-01; hourly RT LMPs are integrated values.",
+    "docs": "https://dataminer2.pjm.com/ ; https://www.pjm.com/markets-and-operations/energy",
+    "status": "verify_before_use"
+  },
+  "MISO": {
+    "timezone": "Etc/GMT+5", "observes_dst": false,
+    "native_timestamp": "Market date + hour ending (HE1-HE24) in Eastern Standard Time year-round (no DST)",
+    "default_convention": "interval_ending",
+    "da_interval_minutes": 60, "rt_interval_minutes": 5,
+    "price_term": "LMP", "components": ["energy", "congestion", "loss"], "congestion_sign": 1,
+    "notes": "Reports LMP, MCC (congestion) and MLC (loss); energy = LMP - MCC - MLC. EST all year: summer hours are offset one hour from Eastern prevailing time.",
+    "docs": "https://www.misoenergy.org/markets-and-operations/real-time--market-data/market-reports/",
+    "status": "verify_before_use"
+  },
+  "NYISO": {
+    "timezone": "America/New_York", "observes_dst": true,
+    "native_timestamp": "Time Stamp in Eastern prevailing time (check per report whether it marks interval start or end)",
+    "default_convention": "interval_beginning",
+    "da_interval_minutes": 60, "rt_interval_minutes": 5,
+    "price_term": "LBMP", "components": ["energy", "congestion", "loss"], "congestion_sign": -1,
+    "notes": "LBMP = energy + losses - published congestion component (published Marginal Cost Congestion is the negative of the shift-factor-weighted shadow prices). A negative published congestion value RAISES the price.",
+    "docs": "https://www.nyiso.com/energy-market-operational-data ; https://www.nyiso.com/documents/20142/3625950/mpug.pdf",
+    "status": "verify_before_use"
+  },
+  "ISONE": {
+    "timezone": "America/New_York", "observes_dst": true,
+    "native_timestamp": "Date + Hour Ending (01-24, repeated fall-back hour labelled 02X) in Eastern prevailing time",
+    "default_convention": "interval_ending",
+    "da_interval_minutes": 60, "rt_interval_minutes": 5,
+    "price_term": "LMP", "components": ["energy", "congestion", "loss"], "congestion_sign": 1,
+    "notes": "LMP = energy + congestion + loss. Five-minute real-time settlement (sub-hourly settlement) since 2017.",
+    "docs": "https://www.iso-ne.com/isoexpress/",
+    "status": "verify_before_use"
+  },
+  "SPP": {
+    "timezone": "America/Chicago", "observes_dst": true,
+    "native_timestamp": "GMTIntervalEnd (UTC, interval ending); also Interval in Central prevailing time",
+    "default_convention": "interval_ending",
+    "da_interval_minutes": 60, "rt_interval_minutes": 5,
+    "price_term": "LMP", "components": ["energy", "congestion", "loss"], "congestion_sign": 1,
+    "notes": "LMP = MEC + MCC + MLC.",
+    "docs": "https://marketplace.spp.org/groups/integrated-marketplace",
+    "status": "verify_before_use"
+  }
+}

@@ -1,0 +1,38 @@
+[task]
+id = "r02-eia861-reliability"
+tier = "R"
+title = "Utility reliability rankings from EIA-861"
+domain = "Power & Utilities"
+intended_skills = ["reliability-metrics"]
+det_weight = 0.0
+datasets = ["eia861_2023"]
+instruction = """
+From the EIA-861 2023 reliability data, rank the ten investor-owned utilities with the highest SAIDI excluding major events (IEEE 1366 standard), and show how their ranking changes when major events are included.
+"""
+rubric = """
+Criterion 1: Correct standard and fields
+    Levels: A=40 B=13 C=0
+      [A]: Uses the IEEE 1366 columns (not 'other standard'), with and without MED, and filters to investor-owned utilities.
+      [B]: Mixes standards or ownership types.
+      [C]: Wrong fields.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Handles utilities reporting in multiple states, blanks and '.' placeholders, and explains the aggregation.
+      [B]: Partial.
+      [C]: None.
+Criterion 3: Interpretation
+    Levels: A=30 B=10 C=0
+      [A]: Explains why MED inclusion reorders utilities (storm exposure) and caveats on self-reported data.
+      [B]: Some interpretation.
+      [C]: None.
+"""
+
+[[answer]]
+key = "top10_saidi_excl_med"
+kind = "list"
+description = "Utility names, highest SAIDI (IEEE, without MED) first."
+
+[[answer]]
+key = "ranking_changes"
+kind = "string"
+description = "How the ranking changes with major events included."

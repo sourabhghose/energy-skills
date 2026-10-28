@@ -1,0 +1,6 @@
+# Test-only dependencies for CI (.github/workflows/ci.yml). Versions verified together.
+numpy==2.4.2
+pandas==2.3.3
+tzdata==2025.3
+# Optional: lower bounds only (exercise importorskip tests in CI); tighten to pins after a CI run.
+h3>=4.0,<5

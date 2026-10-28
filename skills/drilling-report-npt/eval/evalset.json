@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "npt-001",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "query": "Using the daily drilling report time log in energy_catalog.energy_skills_eval.ddr_time_log, report NPT hours by category for each rig. Count NPT from both the activity codes and the remarks, report waiting on weather separately from NPT, and use a midnight-to-midnight reporting day. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/drilling-report-npt/outputs/npt-001.md"
+  },
+  {
+    "task_id": "npt-002",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "query": "Which wells in energy_catalog.energy_skills_eval.ddr_time_log actually had lost circulation? List the wells and the hours lost. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/drilling-report-npt/outputs/npt-002.md"
+  },
+  {
+    "task_id": "npt-003",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "query": "Do the time logs in energy_catalog.energy_skills_eval.ddr_time_log add up for every well and report day? List any well-days that don't reconcile and why. The rigs report in US Central time. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/drilling-report-npt/outputs/npt-003.md"
+  },
+  {
+    "task_id": "npt-004",
+    "dataset": "energy_catalog.energy_skills_eval.ddr_time_log",
+    "query": "What was the NPT percentage for each drilling contractor in energy_catalog.energy_skills_eval.ddr_time_log? Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/drilling-report-npt/outputs/npt-004.md"
+  }
+]

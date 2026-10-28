@@ -1,0 +1,76 @@
+[task]
+id = "p15-well-identity"
+tier = "P"
+title = "Reconcile wells and wellbores across two systems by API number"
+domain = "Oil & Gas"
+intended_skills = ["osdu-ppdm-mapper"]
+det_weight = 0.7
+generator = "oilgas.p15_well_identity"
+instruction = """
+Before loading our well master into the new data platform, reconcile the drilling system with production
+accounting. How many unique wells and wellbores does the drilling system have, how many unique wells does
+production accounting reference, and which production records cannot be matched to a drilling-system well?
+"""
+rubric = """
+Criterion 1: API normalisation
+    Levels: A=45 B=15 C=0
+      [A]: Normalises API numbers (strip punctuation, restore leading zeros lost in numeric export such as Colorado 05-, truncate 12/14-digit to the 10-digit well identifier) before matching.
+      [B]: Handles dashes and lengths but not lost leading zeros (or vice versa).
+      [C]: Matches raw strings.
+Criterion 2: Well vs wellbore
+    Levels: A=30 B=10 C=0
+      [A]: Distinguishes well (API-10) from wellbore (API-12, sidetrack code) and maps them to the target model's entities (e.g. OSDU Well and Wellbore, PPDM WELL).
+      [B]: Counts one level only.
+      [C]: Confuses them.
+Criterion 3: Exceptions
+    Levels: A=25 B=10 C=0
+      [A]: Lists unmatched records with reasons and suggests a remediation path.
+      [B]: Lists them without analysis.
+      [C]: None.
+"""
+
+[[answer]]
+key = "drilling_unique_wells"
+kind = "number"
+description = "Unique wells (API-10) in the drilling system."
+
+[[answer]]
+key = "drilling_unique_wellbores"
+kind = "number"
+description = "Unique wellbores (API-12) in the drilling system."
+
+[[answer]]
+key = "production_unique_wells"
+kind = "number"
+description = "Unique wells (API-10) referenced by production accounting."
+
+[[answer]]
+key = "unmatched_production_record_ids"
+kind = "list"
+description = "record_id values in production accounting with no matching drilling-system well."
+
+[[check]]
+type = "exact"
+key = "drilling_unique_wells"
+points = 15
+
+[[check]]
+type = "exact"
+key = "drilling_unique_wellbores"
+points = 15
+
+[[check]]
+type = "exact"
+key = "production_unique_wells"
+points = 25
+
+[[check]]
+type = "set_f1"
+key = "unmatched_production_record_ids"
+points = 35
+
+[[check]]
+type = "decision"
+patterns = [["leading zero", "zero[- ]pad", "zfill", "\\b05\\b", "9[- ]digit"]]
+example = "Restored leading zeros lost in numeric export (Colorado 05)"
+points = 10

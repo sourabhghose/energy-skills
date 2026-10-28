@@ -1,0 +1,49 @@
+[task]
+id = "r01-eia930-ercot-peak"
+tier = "R"
+title = "ERCOT peak demand and data quality from EIA-930"
+domain = "Power & Utilities"
+intended_skills = ["load-forecaster"]
+det_weight = 0.0
+datasets = ["eia930_balance_2024h1"]
+instruction = """
+Using the EIA-930 balance file, find ERCOT's (balancing authority ERCO) peak hourly demand in January-June 2024, the hour it occurred in both UTC and local Central time, and summarise data-quality issues in ERCO's demand series (missing hours, imputed values, outliers).
+"""
+rubric = """
+Criterion 1: Time handling
+    Levels: A=35 B=11 C=0
+      [A]: Uses the UTC timestamp column as the key, converts to Central time with DST, states hour-ending vs hour-beginning convention of EIA-930.
+      [B]: Converts with a fixed offset or ignores the convention.
+      [C]: Uses local time strings as unique keys.
+Criterion 2: Correct series
+    Levels: A=30 B=10 C=0
+      [A]: Filters to ERCO and the demand series (not net generation or forecast), uses the adjusted/imputed columns knowingly.
+      [B]: Right BA, ambiguous series.
+      [C]: Wrong series.
+Criterion 3: Data quality
+    Levels: A=35 B=11 C=0
+      [A]: Quantifies missing/imputed hours, flags outliers with a stated rule, and checks the peak is not an artefact.
+      [B]: Mentions quality without numbers.
+      [C]: None.
+"""
+
+[[answer]]
+key = "peak_demand_mw"
+kind = "number"
+unit = "MW"
+description = "ERCO peak hourly demand, Jan-Jun 2024."
+
+[[answer]]
+key = "peak_hour_utc"
+kind = "string"
+description = "Hour of the peak (UTC, ISO 8601)."
+
+[[answer]]
+key = "peak_hour_local"
+kind = "string"
+description = "Hour of the peak in America/Chicago local time."
+
+[[answer]]
+key = "data_issues"
+kind = "list"
+description = "Short descriptions of data-quality issues found."

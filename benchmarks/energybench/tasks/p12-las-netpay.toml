@@ -1,0 +1,59 @@
+[task]
+id = "p12-las-netpay"
+tier = "P"
+title = "Net pay from LAS files with mixed depth and porosity units"
+domain = "Oil & Gas"
+intended_skills = ["well-log-ingest"]
+det_weight = 0.7
+generator = "subsurface.p12_las_netpay"
+instruction = """
+Compute net pay in feet for each of the three wells using our cutoffs: GR < 75 API, PHIE >= 0.10 (fraction) and
+SW <= 0.50. Count each log sample that meets all three cutoffs over the full logged interval.
+"""
+rubric = """
+Criterion 1: Units and depth reference
+    Levels: A=40 B=15 C=0
+      [A]: Reads each file's depth unit (FT vs M) and curve units (PHIE in % vs V/V) from the LAS header and converts before applying cutoffs and summing thickness in feet.
+      [B]: Handles one of the two unit issues.
+      [C]: Applies cutoffs to raw values.
+Criterion 2: Null handling
+    Levels: A=30 B=10 C=0
+      [A]: Treats the LAS NULL value (-999.25) as missing and excludes those samples from net pay, saying so.
+      [B]: Handles nulls in some curves only.
+      [C]: Treats -999.25 as data.
+Criterion 3: Method and reporting
+    Levels: A=30 B=15 C=0
+      [A]: Net pay = qualifying samples x step, by well, with a parser that follows the LAS 2.0 sections; notes cutoff sensitivity.
+      [B]: Correct method, little reporting.
+      [C]: Unclear method.
+"""
+
+[[answer]]
+key = "net_pay_ft_by_well"
+kind = "map"
+unit = "ft"
+description = "Well name (WELL in the LAS header) -> net pay in feet."
+
+[[answer]]
+key = "total_net_pay_ft"
+kind = "number"
+unit = "ft"
+description = "Sum of net pay over the three wells."
+
+[[check]]
+type = "numeric_map"
+key = "net_pay_ft_by_well"
+abs_tol = 1.0
+points = 60
+
+[[check]]
+type = "numeric"
+key = "total_net_pay_ft"
+abs_tol = 2.0
+points = 20
+
+[[check]]
+type = "decision"
+patterns = [["null", "-999", "missing"], ["meter", "metre", "\\bM\\b", "percent", "%"]]
+example = "NULL -999.25 samples excluded; EB-B-2 depth in metres and PHIE in percent converted"
+points = 20

@@ -1,0 +1,102 @@
+[
+  {
+    "task_id": "dca-001",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Fits start at peak rate, excluding the 2-3 month cleanup ramp",
+        "Shut-in (zero) months are excluded from fitting but counted in cumulative production",
+        "Downtime months are handled by a stated rate basis (producing-day rates using days_on)",
+        "b is bounded and a terminal decline is applied (or the agent asks for both)",
+        "EUR = cumulative to date + forecast to a stated economic limit / max life"
+      ],
+      "guidelines": [
+        "Ask the user for b-bounds, terminal decline, economic limit and life rather than choosing silently",
+        "Report flagged wells individually"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": ["eur_by_well.csv"],
+      "required_action_tokens": ["peak", "days_on", "terminal", "economic limit"],
+      "forbidden_patterns": ["bounds=\\(0,\\s*(5|10|np\\.inf)\\)"],
+      "numeric_answers": {"total_eur_bbl": {"value": 17382951.0, "rel_tol": 0.05}}
+    },
+    "decision_answers": {
+      "rate_basis": "producing_day", "decline_start": "peak", "outlier_method": "mad",
+      "b_bounds": [0.0, 1.5], "terminal_decline_eff": 0.08, "econ_limit_rate": 5.0, "max_life_years": 50
+    }
+  },
+  {
+    "task_id": "dca-002",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "P10 is the high case (90th percentile) and P90 the low case under PRMS",
+        "Two wells with missing lateral length are excluded and named, not imputed silently",
+        "Rates/EURs are scaled by 10,000 ft / lateral_ft (normalization stated)",
+        "Months with too few wells are truncated to avoid survivor bias"
+      ],
+      "guidelines": ["P10 >= P50 >= P90 everywhere in the output"]
+    },
+    "deterministic_checks": {
+      "required_artifacts": ["type_curve.csv"],
+      "required_action_tokens": ["P10", "P90", "10,000", "lateral"],
+      "forbidden_patterns": ["P10\\s*=\\s*np\\.percentile\\([^)]*,\\s*10\\)"],
+      "numeric_answers": {
+        "p50_eur_per_10k_ft": {"value": 668688.0, "rel_tol": 0.07},
+        "p10_high_eur_per_10k_ft": {"value": 879614.0, "rel_tol": 0.10},
+        "p90_low_eur_per_10k_ft": {"value": 344319.0, "rel_tol": 0.12}
+      }
+    },
+    "decision_answers": {
+      "rate_basis": "producing_day", "decline_start": "peak", "outlier_method": "mad",
+      "b_bounds": [0.0, 1.5], "terminal_decline_eff": 0.08, "econ_limit_rate": 5.0, "max_life_years": 50,
+      "normalization": "lateral_length", "reference_lateral_ft": 10000
+    }
+  },
+  {
+    "task_id": "dca-003",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "The zero-volume month is identified as a shut-in and excluded from the fit",
+        "The 2.5x spike two months after the shut-in is identified as flush production / outlier",
+        "Partial-month downtime is handled via days_on",
+        "The forecast ends at a stated economic limit"
+      ],
+      "guidelines": ["List every excluded period with its reason"]
+    },
+    "deterministic_checks": {
+      "required_artifacts": ["forecast.csv"],
+      "required_action_tokens": ["shut-in", "outlier", "economic limit"],
+      "forbidden_patterns": [],
+      "numeric_answers": {}
+    },
+    "decision_answers": {
+      "rate_basis": "producing_day", "decline_start": "peak", "outlier_method": "mad",
+      "b_bounds": [0.0, 1.5], "terminal_decline_eff": 0.08, "econ_limit_rate": 5.0, "max_life_years": 50
+    }
+  },
+  {
+    "task_id": "dca-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "A first-year decline for a hyperbolic is conventionally the secant effective decline (SPEE)",
+        "Di nominal = ((1 - 0.72)^-1.2 - 1) / 1.2 = 3.006 per year",
+        "First-year cumulative is about 176,000 bbl",
+        "The agent states the secant vs tangent assumption (or asks)"
+      ],
+      "guidelines": ["Do not use -ln(1 - 0.72) = 1.27 /yr as the hyperbolic Di without saying it assumes tangent effective"]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [],
+      "required_action_tokens": ["secant", "nominal"],
+      "forbidden_patterns": [],
+      "numeric_answers": {
+        "di_nominal_per_yr": {"value": 3.00576, "rel_tol": 0.005},
+        "first_year_cum_bbl": {"value": 176160.0, "rel_tol": 0.01}
+      }
+    }
+  }
+]

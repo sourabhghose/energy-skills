@@ -1,0 +1,125 @@
+[
+  {
+    "task_id": "efm-001",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Chooses a model with native known-future covariates (Chronos-2) or explains how covariates are wired",
+        "Pins the Hugging Face revision to an immutable commit and stages weights to a UC Volume",
+        "Converts timestamps to UTC / timezone-aware before forecasting",
+        "Backtests against a seasonal-naive baseline before registering",
+        "Uses quantile levels the checkpoint emits (0.1, 0.5, 0.9)",
+        "Enables AI Gateway inference tables with a data-minimization note"
+      ],
+      "guidelines": [
+        "Asks the user to confirm decisions (horizon, quantiles, compute, licence acceptance) rather than silently choosing them",
+        "Does not download weights at request time inside predict",
+        "Uses exact pinned pip requirements"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        ["chronos-2", "Chronos2", "chronos_2"],
+        ["revision", "[0-9a-f]{40}"],
+        ["UTC", "tz_convert", "timezone"],
+        ["seasonal[ -]naive", "MASE", "baseline"],
+        ["inference[ _]table", "AiGatewayInferenceTableConfig"]
+      ],
+      "forbidden_patterns": ["revision\\s*=\\s*[\"']main[\"']"]
+    }
+  },
+  {
+    "task_id": "efm-002",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "Moirai weights are licensed CC-BY-NC-4.0 (non-commercial)",
+        "A trading desk forecasting prices for its own business is commercial use",
+        "Recommends a commercially licensed alternative (Chronos-2, Chronos-Bolt or TimesFM 2.5)",
+        "Prices can be negative, so forecasts must not be clipped at zero"
+      ],
+      "guidelines": [
+        "Does not deploy Moirai to a production endpoint",
+        "Distinguishes the Apache-2.0 code licence from the weights licence"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        ["CC-BY-NC", "non-commercial", "noncommercial"],
+        ["chronos", "timesfm"],
+        ["negative"]
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "efm-003",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "TimesFM 3.0 weights are under a non-commercial licence that forbids production use",
+        "TimesFM 2.5 and earlier weights are Apache-2.0",
+        "Recommends TimesFM 2.5 (google/timesfm-2.5-200m-pytorch) or another commercial model, pinned to a commit"
+      ],
+      "guidelines": [
+        "Does not register TimesFM 3.0 for production use",
+        "Ends with a concrete next step"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        ["non-commercial", "noncommercial", "not permitted"],
+        ["2\\.5"]
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "efm-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Local wall-clock timestamps contain a repeated hour and a missing hour at DST transitions",
+        "Localizes with the correct timezone and converts to UTC before forecasting",
+        "48 hourly steps is within Chronos-Bolt's 64-step limit",
+        "Compares against a weekly seasonal-naive baseline (last week's value) with a rolling-origin backtest"
+      ],
+      "guidelines": [
+        "Reports the comparison metric (e.g. MASE ratio) and whether the model wins",
+        "Does not use a random train/test split"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        ["DST", "daylight saving"],
+        ["UTC"],
+        ["seasonal[ -]naive", "last week", "168"],
+        ["MASE", "MAE"]
+      ],
+      "forbidden_patterns": ["train_test_split"]
+    }
+  },
+  {
+    "task_id": "efm-005",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Uses the Prithvi-EO-2.0 burn-scar fine-tuned model (Prithvi-EO-2.0-300M-BurnScars) or a fine-tuned head",
+        "HLS S30 band codes for Prithvi inputs are B02, B03, B04, B8A, B11, B12 (not B05-B07)",
+        "Runs as a GPU batch Job over Volume-hosted chips rather than a Model Serving endpoint"
+      ],
+      "guidelines": [
+        "Validates band order and scaling before inference",
+        "Treats asset locations near substations as sensitive"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        ["Prithvi"],
+        ["B8A", "band order"],
+        ["Job", "batch"]
+      ],
+      "forbidden_patterns": []
+    }
+  }
+]

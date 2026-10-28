@@ -1,0 +1,71 @@
+[task]
+id = "p23-heat-rate"
+tier = "P"
+title = "Net heat rate and capacity factor KPIs for a generation fleet"
+domain = "Others"
+intended_skills = ["energy-semantic-builder"]
+det_weight = 0.7
+generator = "accounting.p23_heat_rate"
+instruction = """
+Define and compute our 2024 fleet KPIs: net heat rate (Btu/kWh) for each fuel-burning plant and for the fleet, and
+net capacity factor for every plant. These definitions will become the governed metrics for our dashboards.
+"""
+rubric = """
+Criterion 1: Metric definitions
+    Levels: A=40 B=15 C=0
+      [A]: Net generation = gross - station service; net heat rate = fuel MMBtu x 1e6 / net kWh; fleet heat rate = total fuel / total net generation of thermal plants (not an average of plant rates); wind excluded from heat rate.
+      [B]: Uses gross generation, or averages plant heat rates.
+      [C]: Wrong definitions.
+Criterion 2: Capacity factor
+    Levels: A=35 B=15 C=0
+      [A]: Net generation / (nameplate MW x 8,784 h) for leap year 2024.
+      [B]: 8,760 h or gross generation.
+      [C]: Wrong.
+Criterion 3: Governed metric spec
+    Levels: A=25 B=10 C=0
+      [A]: Writes the metrics as reusable definitions (formula, unit, grain, filters), suitable for a semantic layer.
+      [B]: Only computed values.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "net_heat_rate_btu_per_kwh_by_plant"
+kind = "map"
+unit = "Btu/kWh"
+description = "plant_id -> 2024 net heat rate, fuel-burning plants only."
+
+[[answer]]
+key = "fleet_net_heat_rate_btu_per_kwh"
+kind = "number"
+unit = "Btu/kWh"
+description = "2024 fleet net heat rate, fuel-burning plants."
+
+[[answer]]
+key = "net_capacity_factor_pct_by_plant"
+kind = "map"
+unit = "%"
+description = "plant_id -> 2024 net capacity factor, all plants."
+
+[[check]]
+type = "numeric_map"
+key = "net_heat_rate_btu_per_kwh_by_plant"
+rel_tol = 0.003
+points = 30
+
+[[check]]
+type = "numeric"
+key = "fleet_net_heat_rate_btu_per_kwh"
+rel_tol = 0.003
+points = 25
+
+[[check]]
+type = "numeric_map"
+key = "net_capacity_factor_pct_by_plant"
+rel_tol = 0.003
+points = 30
+
+[[check]]
+type = "decision"
+patterns = [["station service", "auxiliary", "net generation", "gross"]]
+example = "Net generation = gross minus station service"
+points = 15

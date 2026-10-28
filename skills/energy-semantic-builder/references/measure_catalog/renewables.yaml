@@ -1,0 +1,56 @@
+# DOMAIN: renewables — solar performance ratio, availability, specific yield.
+domain: renewables
+
+metric_views:
+  - name: mv_renewables__plant_interval
+    entity: plant_interval
+    grain: plant_interval
+
+measures:
+  - { name: energy_kwh_total, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "SUM(energy_kwh)", unit: kWh, definition: "Metered AC energy." }
+  - { name: reference_energy_kwh, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "SUM(poa_insolation_kwh_m2 * dc_capacity_kwp)", unit: kWh,
+      definition: "Reference yield x DC capacity: POA insolation (kWh/m2) / 1 kW/m2 x kWp." ,
+      reference: "IEC 61724-1" }
+  - { name: available_hours_total, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "SUM(available_hours)", unit: h, definition: "Hours the plant was available." }
+  - { name: period_hours_total, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "SUM(period_hours)", unit: h, definition: "Hours in the reporting intervals." }
+  - { name: lost_energy_kwh_total, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "SUM(lost_energy_kwh)", unit: kWh, definition: "Energy lost to unavailability." }
+  - { name: interval_count, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "COUNT(DISTINCT interval_start)", unit: intervals, definition: "Distinct metering intervals." }
+  - { name: dc_capacity_kwp_sum, type: atomic, metric_view: mv_renewables__plant_interval, entity: plant_interval,
+      expr: "SUM(dc_capacity_kwp)", unit: kWp-intervals, definition: "Capacity summed over plant-intervals." }
+  - name: performance_ratio_pct
+    type: composite
+    metric_view: mv_renewables__plant_interval
+    expr: "100 * MEASURE(energy_kwh_total) / NULLIF(MEASURE(reference_energy_kwh), 0)"
+    depends_on: [energy_kwh_total, reference_energy_kwh]
+    unit: "%"
+    definition: "Performance ratio (not temperature-corrected): final yield / reference yield."
+    anti_pattern: "Averaging daily PRs; using GHI instead of POA; including night intervals with metered parasitic load only in the numerator."
+    reference: "IEC 61724-1"
+  - name: time_availability_pct
+    type: composite
+    metric_view: mv_renewables__plant_interval
+    expr: "100 * MEASURE(available_hours_total) / NULLIF(MEASURE(period_hours_total), 0)"
+    depends_on: [available_hours_total, period_hours_total]
+    unit: "%"
+    definition: "Time-based availability."
+  - name: energy_availability_pct
+    type: composite
+    metric_view: mv_renewables__plant_interval
+    expr: "100 * MEASURE(energy_kwh_total) / NULLIF(MEASURE(energy_kwh_total) + MEASURE(lost_energy_kwh_total), 0)"
+    depends_on: [energy_kwh_total, lost_energy_kwh_total]
+    unit: "%"
+    definition: "Energy-based availability: produced / (produced + lost to unavailability)."
+    reference: "IEC 61400-26-2 (wind)"
+  - name: specific_yield_kwh_per_kwp
+    type: composite
+    metric_view: mv_renewables__plant_interval
+    expr: "MEASURE(energy_kwh_total) / NULLIF(MEASURE(dc_capacity_kwp_sum) / MEASURE(interval_count), 0)"
+    depends_on: [energy_kwh_total, dc_capacity_kwp_sum, interval_count]
+    unit: kWh/kWp
+    definition: "Final yield: energy per installed kWp (fleet capacity averaged over intervals)."

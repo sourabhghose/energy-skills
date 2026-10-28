@@ -1,0 +1,69 @@
+[task]
+id = "p07-wildfire-miles"
+tier = "P"
+title = "Overhead circuit miles in Tier 3 High Fire-Threat District"
+domain = "Power & Utilities"
+intended_skills = ["wildfire-asset-risk"]
+det_weight = 0.7
+generator = "power.p07_wildfire_miles"
+instruction = """
+For our wildfire mitigation plan we need the overhead conductor miles inside Tier 3 HFTD, in total and by circuit,
+and the circuit with the most Tier 3 overhead miles. Classify each span by the location of its midpoint.
+"""
+rubric = """
+Criterion 1: Geodesic length
+    Levels: A=40 B=10 C=0
+      [A]: Computes span lengths on the earth's surface (haversine/geodesic or a suitable projected CRS in metres), not by scaling degree differences.
+      [B]: Approximates with a latitude-corrected degree conversion and says so.
+      [C]: Treats degrees as a planar distance.
+Criterion 2: Scope
+    Levels: A=35 B=15 C=0
+      [A]: Counts only overhead spans, classifies by span midpoint within Tier 3 polygons only (not Tier 2), and handles the polygon test correctly.
+      [B]: One scope error.
+      [C]: Several scope errors.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: Miles by circuit with units and CRS assumptions stated.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "tier3_overhead_miles"
+kind = "number"
+unit = "miles"
+description = "Total overhead conductor miles with span midpoint in Tier 3."
+
+[[answer]]
+key = "tier3_overhead_miles_by_circuit"
+kind = "map"
+unit = "miles"
+description = "circuit_id -> Tier 3 overhead miles (circuits with none may be omitted)."
+
+[[answer]]
+key = "top_circuit"
+kind = "string"
+description = "circuit_id with the most Tier 3 overhead miles."
+
+[[check]]
+type = "numeric"
+key = "tier3_overhead_miles"
+rel_tol = 0.015
+points = 40
+
+[[check]]
+type = "numeric_map"
+key = "tier3_overhead_miles_by_circuit"
+rel_tol = 0.02
+points = 30
+
+[[check]]
+type = "exact"
+key = "top_circuit"
+points = 15
+
+[[check]]
+type = "decision"
+patterns = [["haversine", "geodesic", "great[- ]circle", "projected", "UTM", "EPSG", "CRS"]]
+example = "Span length by haversine distance on WGS84 coordinates"
+points = 15

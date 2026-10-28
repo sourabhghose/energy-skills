@@ -1,0 +1,17 @@
+[
+  {
+    "task_id": "wli-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/well_logs/task_001",
+    "query": "Load the LAS files in /Volumes/energy_catalog/energy_skills/eval/well_logs/task_001 into a single table with one column each for gamma ray, bulk density, neutron porosity and sonic, depths in feet below ground level, keyed by 14-digit API number. Then give me the mean of each curve per well. Save the per-well means to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/wli-001/curve_means.csv."
+  },
+  {
+    "task_id": "wli-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/well_logs/task_002",
+    "query": "Build a composite gamma ray log for the well in /Volumes/energy_catalog/energy_skills/eval/well_logs/task_002 from its two logging runs. Save it to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/wli-002/composite_gr.csv and report the mean GR between 6,400 and 6,600 ft."
+  },
+  {
+    "task_id": "wli-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/well_logs/task_003",
+    "query": "Convert the log in /Volumes/energy_catalog/energy_skills/eval/well_logs/task_003 to TVDSS in feet and save it to /Volumes/energy_catalog/energy_skills/eval/out/<ARM>/wli-003/tvdss.csv."
+  }
+]

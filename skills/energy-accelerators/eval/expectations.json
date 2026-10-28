@@ -1,0 +1,96 @@
+[
+  {
+    "task_id": "ea-001",
+    "difficulty": "easy",
+    "expectations": {
+      "expected_facts": [
+        "Recommends the Energy Sandbox accelerator (databricks-industry-solutions/energy-sandbox), Production Optimizer project",
+        "Deploys the project as a Databricks App with Asset Bundles (databricks bundle deploy)",
+        "Pairs the demo with a disciplined decline-curve step (bounded b-factor, terminal decline) for defensible EUR"
+      ],
+      "guidelines": [
+        "Ends with a concrete next step the user can run",
+        "Does not present a from-scratch app build as the main recommendation without mentioning Energy Sandbox"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [["energy[- ]sandbox"], ["production[- ]optimizer"], ["bundle"]],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "ea-002",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "There is no managed Lakeflow Connect connector for on-prem PI listed by Databricks (as of 2026-10-28)",
+        "AVEVA CONNECT integrates with Databricks via Delta Sharing",
+        "Alternatives: a custom Lakeflow connector against PI Web API, or landing data via Kafka / object storage"
+      ],
+      "guidelines": [
+        "Does not invent a Databricks PI connector name",
+        "Mentions mapping tags through PI Asset Framework or the OT change-control process"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [["AVEVA CONNECT", "CONNECT"], ["Delta Sharing"], ["PI Web API", "custom connector", "Kafka"]],
+      "forbidden_patterns": ["Lakeflow Connect (?:PI|OSIsoft) connector is available"]
+    }
+  },
+  {
+    "task_id": "ea-003",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Recommends ARMOR (databricks-industry-solutions/asset-risk-and-capital-planning)",
+        "ARMOR runs on a generated demo utility via `databricks bundle run armor_demo` and plans replacements with a MILP optimizer",
+        "Predicted SAIFI/SAIDI contributions are model outputs, distinct from reported IEEE 1366 indices with Major Event Day exclusion"
+      ],
+      "guidelines": [
+        "Gives prerequisites (Unity Catalog, serverless, Databricks Apps, SQL warehouse)",
+        "Ends with a concrete next step"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [["ARMOR", "asset-risk-and-capital-planning"], ["armor_demo", "bundle run"], ["IEEE 1366", "Major Event", "reported"]],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "ea-004",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "Databricks Labs Mosaic reached end of support (archived; DBR 13.3, August 2026)",
+        "GeoBrix is the successor; built-in h3_* / ST_* functions (DBR 17.1+) cover vector work",
+        "The Flood Prediction accelerator already tessellates a DEM to H3 with GeoBrix RasterX and scores flood probability"
+      ],
+      "guidelines": [
+        "Does not give Mosaic installation instructions as the recommended path",
+        "Treats substation locations as sensitive"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [["GeoBrix"], ["flood[- ]prediction"], ["end of support", "deprecated", "archived", "EoS"]],
+      "forbidden_patterns": ["pip install databricks-mosaic"]
+    }
+  },
+  {
+    "task_id": "ea-005",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "No verified Databricks solution accelerator for EPA Subpart W reporting is listed",
+        "Routes to the ghg-emissions-calculator Energy Skill (or equivalent disciplined calculation) for Subpart W"
+      ],
+      "guidelines": [
+        "Does not invent an accelerator repository name or URL",
+        "Ends with a concrete next step"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [["no (?:verified |existing )?(?:Databricks )?(?:solution )?accelerator", "not aware of", "does not exist", "none"], ["ghg-emissions-calculator", "Subpart W"]],
+      "forbidden_patterns": ["github\\.com/databricks-industry-solutions/[a-z0-9-]*subpart"]
+    }
+  }
+]

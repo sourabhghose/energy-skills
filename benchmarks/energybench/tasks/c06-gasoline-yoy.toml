@@ -1,0 +1,64 @@
+[task]
+id = "c06-gasoline-yoy"
+tier = "P"
+title = "Year-over-year gasoline price change"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c06_gasoline_yoy"
+instruction = """
+What were the 2023 and 2024 average weekly regular gasoline prices, and the percentage change from 2023 to 2024?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "avg_2023_usd"
+kind = "number"
+unit = "$/gal"
+description = "Mean of the 2023 weekly prices."
+
+[[answer]]
+key = "avg_2024_usd"
+kind = "number"
+unit = "$/gal"
+description = "Mean of the 2024 weekly prices."
+
+[[answer]]
+key = "yoy_change_pct"
+kind = "number"
+unit = "%"
+description = "Percentage change, 2024 vs 2023."
+
+[[check]]
+type = "numeric"
+key = "avg_2023_usd"
+abs_tol = 0.001
+points = 30
+
+[[check]]
+type = "numeric"
+key = "avg_2024_usd"
+abs_tol = 0.001
+points = 30
+
+[[check]]
+type = "numeric"
+key = "yoy_change_pct"
+abs_tol = 0.02
+points = 40

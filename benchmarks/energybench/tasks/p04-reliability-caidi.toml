@@ -1,0 +1,70 @@
+[task]
+id = "p04-reliability-caidi"
+tier = "P"
+title = "System SAIDI, SAIFI and CAIDI from feeder events"
+domain = "Power & Utilities"
+intended_skills = ["reliability-metrics"]
+det_weight = 0.7
+generator = "power.p04_reliability_caidi"
+instruction = """
+Compute 2024 system-level SAIDI, SAIFI and CAIDI from our feeder-level OMS events for the annual reliability report.
+"""
+rubric = """
+Criterion 1: Aggregation
+    Levels: A=45 B=15 C=0
+      [A]: Builds system indices from total customer minutes and customer interruptions over total customers served (not by averaging feeder indices), and derives CAIDI as SAIDI / SAIFI.
+      [B]: Correct formulas at feeder level but aggregates by an unweighted mean.
+      [C]: Wrong formulas.
+Criterion 2: Event hygiene
+    Levels: A=30 B=10 C=0
+      [A]: Excludes cancelled events and checks for duplicates or impossible values (customers interrupted above customers served).
+      [B]: Partial cleaning.
+      [C]: Uses all rows as-is.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: Units, customers-served basis, and a short note on worst feeders.
+      [B]: Numbers only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "system_saidi_min"
+kind = "number"
+unit = "minutes"
+description = "2024 system SAIDI."
+
+[[answer]]
+key = "system_saifi"
+kind = "number"
+unit = "interruptions/customer"
+description = "2024 system SAIFI."
+
+[[answer]]
+key = "system_caidi_min"
+kind = "number"
+unit = "minutes"
+description = "2024 system CAIDI."
+
+[[check]]
+type = "numeric"
+key = "system_saidi_min"
+rel_tol = 0.003
+points = 30
+
+[[check]]
+type = "numeric"
+key = "system_saifi"
+rel_tol = 0.003
+points = 30
+
+[[check]]
+type = "numeric"
+key = "system_caidi_min"
+rel_tol = 0.003
+points = 25
+
+[[check]]
+type = "decision"
+patterns = [["cancel"]]
+example = "Cancelled OMS events excluded"
+points = 15

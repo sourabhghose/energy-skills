@@ -1,0 +1,137 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# CANONICAL ENTITY MODEL — the energy semantic contract.
+#
+# Measures reference ONLY entities + fields declared here. A customer source satisfies
+# them through a per-customer mapping file; this contract never changes per customer.
+#
+#   field.type      logical type the measure expression relies on
+#   field.unit      physical unit of the canonical field (convert in the mapping, not in measures)
+#   field.required  an entity is not "mapped" without it
+#   field.role      key | date | dimension | measure_source
+#   field.synonyms  hints for scripts/profile_source.py when drafting a mapping
+#   field.default_if_unmapped  constant the silver view emits when the field is not mapped
+#   entity.grain    one row means exactly this
+# ─────────────────────────────────────────────────────────────────────────────
+
+version: 0.1.0
+
+entities:
+
+  well_day:
+    grain: One well on one production day (allocated volumes).
+    grain_keys: [well_id, production_date]
+    domain: upstream
+    fields:
+      well_id:          { type: string, required: true,  role: key, synonyms: [uwi, api_no, api14, well_api, wellbore_id] }
+      production_date:  { type: date,   required: true,  role: date, synonyms: [prod_date, date, volume_date] }
+      field_name:       { type: string, required: false, role: dimension, synonyms: [field, asset, area] }
+      operator:         { type: string, required: false, role: dimension }
+      oil_bbl:          { type: double, unit: bbl, required: true,  role: measure_source, synonyms: [oil_vol, oil, oil_prod_bbl] }
+      gas_mcf:          { type: double, unit: Mcf, required: true,  role: measure_source, synonyms: [gas_vol, gas, gas_prod_mcf] }
+      ngl_bbl:          { type: double, unit: bbl, required: false, role: measure_source, synonyms: [ngl, condensate_bbl],
+                          default_if_unmapped: 0, note: "unmapped -> 0 in the silver view (no NGL stream)" }
+      water_bbl:        { type: double, unit: bbl, required: false, role: measure_source, synonyms: [water_vol, water, wtr] }
+      producing_hours:  { type: double, unit: h,   required: false, role: measure_source, synonyms: [hours_on, on_hours, uptime_hours],
+                          note: "0-24; hours the well actually flowed" }
+
+  well_month:
+    grain: One well in one calendar month (volumes and lease operating expense conformed to the same grain).
+    grain_keys: [well_id, production_month]
+    domain: upstream
+    fields:
+      well_id:          { type: string, required: true,  role: key, synonyms: [uwi, api_no, api14] }
+      production_month: { type: date,   required: true,  role: date, synonyms: [month, prod_month, period] }
+      field_name:       { type: string, required: false, role: dimension, synonyms: [field, asset] }
+      oil_bbl:          { type: double, unit: bbl, required: true,  role: measure_source }
+      gas_mcf:          { type: double, unit: Mcf, required: true,  role: measure_source }
+      ngl_bbl:          { type: double, unit: bbl, required: false, role: measure_source, default_if_unmapped: 0 }
+      water_bbl:        { type: double, unit: bbl, required: false, role: measure_source }
+      loe_usd:          { type: double, unit: USD, required: true,  role: measure_source, synonyms: [lease_operating_expense, opex, loe] }
+
+  unit_period:
+    grain: One generating unit for one reporting period (hour, day, or month); GADS hours for the same period.
+    grain_keys: [unit_id, period_start]
+    domain: generation
+    fields:
+      unit_id:               { type: string, required: true,  role: key, synonyms: [generator_id, gen_id, unit] }
+      period_start:          { type: date,   required: true,  role: date, synonyms: [period, month, report_date] }
+      plant_id:              { type: string, required: false, role: dimension, synonyms: [plant_code, facility_id, eia_plant_id] }
+      fuel_type:             { type: string, required: false, role: dimension, synonyms: [fuel, energy_source] }
+      prime_mover:           { type: string, required: false, role: dimension }
+      period_hours:          { type: double, unit: h,     required: true,  role: measure_source, note: "PH: hours in the period (DST-aware)" }
+      capacity_mw:           { type: double, unit: MW,    required: true,  role: measure_source, note: "basis set by the capacity_basis decision" }
+      gross_mwh:             { type: double, unit: MWh,   required: false, role: measure_source, synonyms: [gross_gen, gross_generation] }
+      net_mwh:               { type: double, unit: MWh,   required: true,  role: measure_source, synonyms: [net_gen, net_generation] }
+      fuel_mmbtu:            { type: double, unit: MMBtu, required: false, role: measure_source, synonyms: [fuel_consumed_mmbtu, heat_input], note: "basis set by heat_rate_basis" }
+      service_hours:         { type: double, unit: h,     required: false, role: measure_source, note: "SH" }
+      available_hours:       { type: double, unit: h,     required: false, role: measure_source, note: "AH" }
+      forced_outage_hours:   { type: double, unit: h,     required: false, role: measure_source, note: "FOH" }
+      eudh:                  { type: double, unit: h,     required: false, role: measure_source, note: "equivalent unplanned derated hours" }
+      epdh:                  { type: double, unit: h,     required: false, role: measure_source, note: "equivalent planned derated hours" }
+      esedh:                 { type: double, unit: h,     required: false, role: measure_source, note: "equivalent seasonal derated hours" }
+      efdh:                  { type: double, unit: h,     required: false, role: measure_source, note: "equivalent forced derated hours" }
+      efdhrs:                { type: double, unit: h,     required: false, role: measure_source, note: "equivalent forced derated hours during reserve shutdown" }
+
+  feeder_period:
+    grain: One feeder (or substation) for one period, energy in and energy delivered to customers.
+    grain_keys: [feeder_id, period_start]
+    domain: grid
+    fields:
+      feeder_id:             { type: string, required: true,  role: key, synonyms: [circuit_id, feeder] }
+      period_start:          { type: date,   required: true,  role: date }
+      substation:            { type: string, required: false, role: dimension }
+      energy_received_mwh:   { type: double, unit: MWh, required: true, role: measure_source, synonyms: [energy_in, sendout] }
+      energy_delivered_mwh:  { type: double, unit: MWh, required: true, role: measure_source, synonyms: [energy_sold, billed_mwh] }
+
+  reliability_day:
+    grain: One circuit on one local calendar day, including zero-outage days (from reliability-metrics daily fact).
+    grain_keys: [circuit_id, event_date]
+    domain: grid
+    fields:
+      circuit_id:            { type: string,  required: true,  role: key }
+      event_date:            { type: date,    required: true,  role: date }
+      region:                { type: string,  required: false, role: dimension }
+      customer_minutes:      { type: double,  unit: customer-min, required: true, role: measure_source }
+      customers_interrupted: { type: double,  unit: customers, required: true, role: measure_source }
+      customers_served:      { type: double,  unit: customers, required: true, role: measure_source }
+      is_med:                { type: boolean, required: true,  role: dimension, note: "IEEE 1366 Major Event Day (system-level)" }
+
+  plant_interval:
+    grain: One renewable plant for one metering interval.
+    grain_keys: [plant_id, interval_start]
+    domain: renewables
+    fields:
+      plant_id:              { type: string, required: true,  role: key }
+      interval_start:        { type: timestamp, required: true, role: date, note: "tz-aware in source; store UTC" }
+      technology:            { type: string, required: false, role: dimension, enum: [solar_pv, wind, storage, other] }
+      energy_kwh:            { type: double, unit: kWh, required: true,  role: measure_source, synonyms: [ac_energy, meter_kwh] }
+      poa_insolation_kwh_m2: { type: double, unit: kWh/m2, required: false, role: measure_source, note: "plane-of-array insolation over the interval" }
+      dc_capacity_kwp:       { type: double, unit: kWp, required: false, role: measure_source }
+      available_hours:       { type: double, unit: h,   required: false, role: measure_source }
+      period_hours:          { type: double, unit: h,   required: false, role: measure_source }
+      lost_energy_kwh:       { type: double, unit: kWh, required: false, role: measure_source, note: "energy lost to unavailability (not curtailment)" }
+
+  facility_period:
+    grain: One reporting facility for one period, emissions with its activity data.
+    grain_keys: [facility_id, period_start]
+    domain: emissions
+    fields:
+      facility_id:           { type: string, required: true,  role: key, synonyms: [ghgrp_id, facility] }
+      period_start:          { type: date,   required: true,  role: date }
+      sector:                { type: string, required: false, role: dimension }
+      co2e_t:                { type: double, unit: tCO2e, required: true,  role: measure_source, note: "GWP basis recorded by ghg-emissions-calculator" }
+      ch4_t:                 { type: double, unit: tCH4,  required: false, role: measure_source }
+      net_mwh:               { type: double, unit: MWh,   required: false, role: measure_source }
+      production_boe:        { type: double, unit: boe,   required: false, role: measure_source }
+
+  bill:
+    grain: One customer bill (one billing period, one account).
+    grain_keys: [bill_id]
+    domain: customer
+    fields:
+      bill_id:               { type: string, required: true,  role: key }
+      customer_id:           { type: string, required: true,  role: dimension }
+      bill_month:            { type: date,   required: true,  role: date }
+      rate_class:            { type: string, required: false, role: dimension, enum: [residential, commercial, industrial, other] }
+      bill_amount_usd:       { type: double, unit: USD, required: true, role: measure_source }
+      billed_kwh:            { type: double, unit: kWh, required: true, role: measure_source }

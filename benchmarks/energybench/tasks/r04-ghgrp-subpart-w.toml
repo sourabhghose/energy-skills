@@ -1,0 +1,39 @@
+[task]
+id = "r04-ghgrp-subpart-w"
+tier = "R"
+title = "Petroleum and natural gas systems emissions from GHGRP"
+domain = "Emissions & ESG"
+intended_skills = ["ghg-emissions-calculator"]
+det_weight = 0.0
+datasets = ["ghgrp_2023_summary"]
+instruction = """
+From the GHGRP 2023 data summary, report total reported CO2e for Petroleum and Natural Gas Systems (Subpart W) by industry segment, and the ten facilities with the highest reported methane.
+"""
+rubric = """
+Criterion 1: Scope of data
+    Levels: A=40 B=13 C=0
+      [A]: Uses the Subpart W segment breakdown, avoids double counting facilities that report under several subparts, and notes onshore production and gathering & boosting report at basin/ownership level.
+      [B]: Some double counting risk unaddressed.
+      [C]: Wrong totals.
+Criterion 2: Methane ranking
+    Levels: A=30 B=10 C=0
+      [A]: Ranks by CH4 (in tonnes or CO2e with the GWP used by GHGRP for that year, stated).
+      [B]: Ranks by total CO2e.
+      [C]: Missing.
+Criterion 3: Caveats
+    Levels: A=30 B=10 C=0
+      [A]: Explains reporting thresholds and the gap between inventory and measurement-based estimates.
+      [B]: Brief.
+      [C]: None.
+"""
+
+[[answer]]
+key = "subpart_w_by_segment_tco2e"
+kind = "map"
+unit = "tCO2e"
+description = "Segment -> total reported CO2e."
+
+[[answer]]
+key = "top10_methane_facilities"
+kind = "list"
+description = "Facility names, highest methane first."

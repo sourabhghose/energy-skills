@@ -1,0 +1,70 @@
+[task]
+id = "p14-drilling-npt"
+tier = "P"
+title = "Non-productive time from free-text drilling reports"
+domain = "Oil & Gas"
+intended_skills = ["drilling-report-npt"]
+det_weight = 0.7
+generator = "subsurface.p14_drilling_npt"
+instruction = """
+Quantify non-productive time (NPT) for wells EB-21H and EB-22H from the daily drilling reports. Classify NPT into
+lost_circulation, stuck_pipe, waiting_on_weather and equipment_repair, and list the reports that recorded lost
+circulation.
+"""
+rubric = """
+Criterion 1: Extraction accuracy
+    Levels: A=45 B=15 C=0
+      [A]: Takes hours from each activity line, classifies NPT activities correctly, and does not count negated or third-party mentions ("no losses observed", "offset well ... stuck pipe", "pipe not stuck").
+      [B]: Mostly right with some keyword false positives.
+      [C]: Keyword counting.
+Criterion 2: Traceability
+    Levels: A=30 B=10 C=0
+      [A]: Each NPT event is traceable to its report and the quoted text it came from.
+      [B]: Report-level only.
+      [C]: No traceability.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: Hours by category and well, total NPT, share of total time.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "npt_hours_by_category"
+kind = "map"
+unit = "hours"
+description = "lost_circulation, stuck_pipe, waiting_on_weather, equipment_repair -> NPT hours (both wells)."
+
+[[answer]]
+key = "total_npt_hours"
+kind = "number"
+unit = "hours"
+description = "Total NPT hours, both wells."
+
+[[answer]]
+key = "lost_circulation_report_ids"
+kind = "list"
+description = "report_id values that recorded lost circulation NPT."
+
+[[check]]
+type = "numeric_map"
+key = "npt_hours_by_category"
+abs_tol = 0.25
+points = 40
+
+[[check]]
+type = "numeric"
+key = "total_npt_hours"
+abs_tol = 0.5
+points = 20
+
+[[check]]
+type = "set_f1"
+key = "lost_circulation_report_ids"
+points = 30
+
+[[check]]
+type = "decision"
+patterns = [["negat", "\\bno losses", "offset well", "not stuck"]]
+example = "Negated mentions such as 'no losses observed' and offset-well references excluded"
+points = 10

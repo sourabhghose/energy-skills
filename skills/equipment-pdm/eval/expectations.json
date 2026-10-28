@@ -1,0 +1,133 @@
+[
+  {
+    "task_id": "pdm-001",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map,energy_catalog.energy_skills_eval.esp_work_orders",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "There are 3 qualifying failures (ESP-03 2026-03-12 ELF, ESP-06 2026-04-11 BRD, ESP-08 2026-04-21 OHE); WO-900 on ESP-05 is preventive maintenance, not a failure",
+        "Evaluation uses a time split with an embargo (or held-out assets) so test labels do not leak into training",
+        "Reports failures caught, lead time in hours or days, and false alarms per asset-month (or per asset per period) on the test period only"
+      ],
+      "guidelines": [
+        "Excludes planned restarts / start-up transients from scoring rather than alerting on them",
+        "States or asks for the label horizon and alert threshold rather than choosing silently",
+        "Does not tune the alert threshold on the test period"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "false alarm"
+        ],
+        [
+          "lead time|hours? before|days? before|days? ahead|hours? ahead"
+        ],
+        [
+          "ESP-0?6|ESP-0?8|ESP-0?3"
+        ]
+      ],
+      "forbidden_patterns": [
+        "WO-900[^\\n]{0,60}(fail|caught)"
+      ]
+    }
+  },
+  {
+    "task_id": "pdm-002",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Motor temperature tags are in degF for ESP-01..04 and degC for ESP-05..08 (from the tag map)",
+        "After converting to one unit, ESP-08 runs hottest at about 114 degC (about 237 degF)"
+      ],
+      "guidelines": [
+        "Does not name ESP-04 as hottest because its raw degF numbers are larger",
+        "Uses running (steady) rows, not stopped periods"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "ESP-0?8"
+        ],
+        [
+          "deg ?F|\u00b0F|Fahrenheit"
+        ]
+      ],
+      "forbidden_patterns": [
+        "(hottest|highest)[^\\n]{0,40}ESP-0?4"
+      ],
+      "numeric": [
+        {
+          "name": "esp08_c_or_f",
+          "value": 114,
+          "tol": 3
+        }
+      ]
+    }
+  },
+  {
+    "task_id": "pdm-003",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "ESP-02 has a 12-hour historian outage starting 2026-02-10 00:00 UTC with no samples; it must not be interpolated across",
+        "Analog MTR_AMPS tags contain PI digital states ('I/O Timeout', 'Shutdown', 'Bad Input'), 6 per asset, which must be dropped, not coerced to 0",
+        "SPARE_AI3 tags exist in the historian but not in the tag map and should be excluded",
+        "Motor temperature units differ across assets (degF vs degC)"
+      ],
+      "guidelines": [
+        "Distinguishes planned stops (RUN=STOP) from data outages"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "ESP-0?2"
+        ],
+        [
+          "I/O Timeout|digital state"
+        ],
+        [
+          "SPARE_AI3|not in the tag map|unmapped"
+        ],
+        [
+          "deg ?F|\u00b0F|Fahrenheit"
+        ]
+      ],
+      "forbidden_patterns": []
+    }
+  },
+  {
+    "task_id": "pdm-004",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_work_orders",
+    "difficulty": "edge",
+    "expectations": {
+      "expected_facts": [
+        "Random row splits leak: neighbouring 20-minute rows are near-duplicates and labels look forward in time",
+        "With 3 failures, pre-failure rows are a tiny share, so 98% accuracy is achievable by predicting 'healthy' always",
+        "A trustworthy evaluation uses a time split with an embargo or held-out assets, and reports recall of failures, lead time and false alarms per asset-month"
+      ],
+      "guidelines": [
+        "Does not accept the 98% figure",
+        "Recommends specific alternative metrics"
+      ]
+    },
+    "deterministic_checks": {
+      "required_patterns": [
+        [
+          "leak"
+        ],
+        [
+          "imbalanc|rare|always predict|majority"
+        ],
+        [
+          "false alarm"
+        ]
+      ],
+      "forbidden_patterns": []
+    }
+  }
+]

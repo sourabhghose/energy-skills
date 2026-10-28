@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "pdm-001",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map,energy_catalog.energy_skills_eval.esp_work_orders",
+    "query": "Using the PI historian samples in energy_catalog.energy_skills_eval.esp_historian, the tag map in energy_catalog.energy_skills_eval.esp_tag_map and the maintenance work orders in energy_catalog.energy_skills_eval.esp_work_orders, build an early-warning model for ESP failures. Tell me how many failures it would have caught, how early, and how many false alarms we should expect. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/equipment-pdm/outputs/pdm-001.md"
+  },
+  {
+    "task_id": "pdm-002",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map,energy_catalog.energy_skills_eval.esp_work_orders",
+    "query": "Which ESP has the highest median motor temperature while running? Use energy_catalog.energy_skills_eval.esp_historian and energy_catalog.energy_skills_eval.esp_tag_map. Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/equipment-pdm/outputs/pdm-002.md"
+  },
+  {
+    "task_id": "pdm-003",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map,energy_catalog.energy_skills_eval.esp_work_orders",
+    "query": "Check the data quality of the historian data in energy_catalog.energy_skills_eval.esp_historian (tag map energy_catalog.energy_skills_eval.esp_tag_map) before we model it. What problems should we fix or exclude? Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/equipment-pdm/outputs/pdm-003.md"
+  },
+  {
+    "task_id": "pdm-004",
+    "dataset": "energy_catalog.energy_skills_eval.esp_historian,energy_catalog.energy_skills_eval.esp_tag_map,energy_catalog.energy_skills_eval.esp_work_orders",
+    "query": "A vendor trained a failure-prediction model on energy_catalog.energy_skills_eval.esp_historian and energy_catalog.energy_skills_eval.esp_work_orders with a random 80/20 train/test split of the 20-minute rows and reports 98% accuracy. Should we trust it? Save your final answer as markdown to /Volumes/energy_catalog/energy_skills/eval/equipment-pdm/outputs/pdm-004.md"
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "lf-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/lf/lf-001",
+    "query": "system_load.csv and weather.csv in /Volumes/energy_catalog/energy_skills/eval/lf/lf-001 cover a Midwest utility (2021-2023). Build a day-ahead hourly load forecasting model, tell me how accurate it is, and save the model's evaluation results to energy_catalog.eval_<ARM>.lf001_backtest."
+  },
+  {
+    "task_id": "lf-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/lf/lf-002",
+    "query": "Using zone_load.csv and weather.csv in /Volumes/energy_catalog/energy_skills/eval/lf/lf-002, pick the weather station that best explains this zone's load and find the zone's heating and cooling balance-point temperatures. Report the station, the balance points, and the HDD/CDD bases you recommend."
+  },
+  {
+    "task_id": "lf-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/lf/lf-003",
+    "query": "2023 was unusually warm. Using load_2023.csv and weather_2013_2023.csv in /Volumes/energy_catalog/energy_skills/eval/lf/lf-003, what was 2023 energy (MWh) and what would it have been in normal weather? Use 2013-2022 as the normal period and write results to energy_catalog.eval_<ARM>.lf003_normalized."
+  },
+  {
+    "task_id": "lf-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/lf/lf-004",
+    "query": "feeder_load.csv in /Volumes/energy_catalog/energy_skills/eval/lf/lf-004 is a Chicago-area feeder's hourly load export; weather.csv is the nearest station. Report November 2023 energy in MWh and produce a day-ahead forecast backtest for that feeder, written to energy_catalog.eval_<ARM>.lf004_backtest."
+  }
+]

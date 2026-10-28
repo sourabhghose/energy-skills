@@ -1,0 +1,69 @@
+[task]
+id = "p18-solar-pr"
+tier = "P"
+title = "PV plant performance ratio, raw and temperature-corrected"
+domain = "Renewables & Markets"
+intended_skills = ["wind-solar-performance"]
+det_weight = 0.7
+generator = "renewables.p18_solar_pr"
+instruction = """
+Report the plant's June 2024 performance ratio, the temperature-corrected performance ratio (IEC 61724-1 style,
+25 degC reference), and the date with the lowest daily performance ratio.
+"""
+rubric = """
+Criterion 1: Irradiance basis
+    Levels: A=40 B=10 C=0
+      [A]: Uses plane-of-array irradiance (not GHI), integrates hourly W/m2 to kWh/m2, and uses DC nameplate at STC as the reference.
+      [B]: Uses POA but with an integration or nameplate slip.
+      [C]: Uses GHI.
+Criterion 2: Temperature correction
+    Levels: A=35 B=15 C=0
+      [A]: Applies the -0.35 %/degC coefficient to the expected energy per hour relative to 25 degC module temperature.
+      [B]: Applies a monthly-average correction.
+      [C]: No correction.
+Criterion 3: Diagnosis
+    Levels: A=25 B=10 C=0
+      [A]: Finds the low-PR day and attributes it (inverter outage or availability), with daily PR shown.
+      [B]: Finds the day without explanation.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "pr_june_pct"
+kind = "number"
+unit = "%"
+description = "June 2024 performance ratio."
+
+[[answer]]
+key = "pr_temp_corrected_june_pct"
+kind = "number"
+unit = "%"
+description = "June 2024 temperature-corrected performance ratio."
+
+[[answer]]
+key = "lowest_pr_date"
+kind = "string"
+description = "Date (YYYY-MM-DD) with the lowest daily PR."
+
+[[check]]
+type = "numeric"
+key = "pr_june_pct"
+rel_tol = 0.003
+points = 35
+
+[[check]]
+type = "numeric"
+key = "pr_temp_corrected_june_pct"
+rel_tol = 0.003
+points = 30
+
+[[check]]
+type = "exact"
+key = "lowest_pr_date"
+points = 20
+
+[[check]]
+type = "decision"
+patterns = [["POA", "plane[- ]of[- ]array"]]
+example = "PR uses POA irradiance, not GHI"
+points = 15

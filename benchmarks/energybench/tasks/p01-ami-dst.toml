@@ -1,0 +1,82 @@
+[task]
+id = "p01-ami-dst"
+tier = "P"
+title = "Daily energy from 15-minute AMI data across the DST fall-back"
+domain = "Power & Utilities"
+intended_skills = ["ami-interval-analytics"]
+det_weight = 0.7
+generator = "power.p01_ami_dst"
+instruction = """
+Our MDM team exported 15-minute interval reads for 20 residential meters for the first weekend of November 2025.
+Billing needs the system total energy (all 20 meters) for each local calendar day from 2025-11-01 to 2025-11-03,
+and wants to know how many intervals each meter should have on 2025-11-02 so they can set a completeness rule.
+"""
+rubric = """
+Criterion 1: Daylight saving time handling
+    Levels: A=45 B=15 C=0
+      [A]: Recognises the repeated 01:00-01:59 local hour on 2025-11-02 (fall-back), keeps both occurrences (for example by using read_seq or localising with the correct ambiguous flag), and explains that the day has 25 hours.
+      [B]: Notices something about DST but drops, averages or double-counts the repeated hour.
+      [C]: Treats timestamps as unique and silently deduplicates or errors.
+Criterion 2: Completeness rule
+    Levels: A=25 B=10 C=0
+      [A]: States that a complete meter-day has 100 intervals on the fall-back day (92 on spring-forward days, 96 otherwise) and checks the data against it.
+      [B]: Gives a completeness rule that ignores DST.
+      [C]: No completeness reasoning.
+Criterion 3: Validation and reporting
+    Levels: A=30 B=15 C=0
+      [A]: Reports daily totals with units, checks for gaps or duplicates per meter, and states the interval-beginning, local-time convention it relied on.
+      [B]: Reports totals with limited validation.
+      [C]: Totals missing or unexplained.
+"""
+
+[[answer]]
+key = "system_kwh_2025_11_01"
+kind = "number"
+unit = "kWh"
+description = "Total energy, all meters, local day 2025-11-01."
+
+[[answer]]
+key = "system_kwh_2025_11_02"
+kind = "number"
+unit = "kWh"
+description = "Total energy, all meters, local day 2025-11-02."
+
+[[answer]]
+key = "system_kwh_2025_11_03"
+kind = "number"
+unit = "kWh"
+description = "Total energy, all meters, local day 2025-11-03."
+
+[[answer]]
+key = "intervals_per_meter_2025_11_02"
+kind = "number"
+description = "Number of 15-minute intervals a complete meter has on 2025-11-02."
+
+[[check]]
+type = "numeric"
+key = "system_kwh_2025_11_02"
+rel_tol = 0.001
+points = 35
+
+[[check]]
+type = "numeric"
+key = "system_kwh_2025_11_01"
+rel_tol = 0.001
+points = 10
+
+[[check]]
+type = "numeric"
+key = "system_kwh_2025_11_03"
+rel_tol = 0.001
+points = 10
+
+[[check]]
+type = "exact"
+key = "intervals_per_meter_2025_11_02"
+points = 30
+
+[[check]]
+type = "decision"
+patterns = [["DST", "daylight", "fall[- ]?back", "repeated hour", "ambiguous", "25[- ]hour"]]
+example = "DST fall-back: the 01:00 hour repeats; kept both occurrences using read_seq"
+points = 15

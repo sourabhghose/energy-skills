@@ -1,0 +1,22 @@
+# Adapter: EIA-923 monthly generation and fuel (plant x prime mover x fuel) joined to EIA-860
+# generator capacity, loaded to Delta with snake_case column names.
+# EIA-923 is reported at plant / prime mover / fuel level, not per generator: unit_id here is
+# a plant-prime-mover-fuel key. GADS fields are not in EIA data; EAF/EFOR measures skip.
+name: eia923_generation
+entities:
+  unit_period:
+    source: <catalog>.<schema>.eia923_generation_fuel_monthly   # REVIEW: your loaded table
+    joins:
+      - table: <catalog>.<schema>.eia860_capacity_by_pm_fuel      # REVIEW: pre-aggregated to the same key (to-one)
+        on: "eia923_generation_fuel_monthly.plant_pm_fuel_key = eia860_capacity_by_pm_fuel.plant_pm_fuel_key"
+        type: left
+    fields:
+      unit_id: eia923_generation_fuel_monthly.plant_pm_fuel_key
+      period_start: "make_date(eia923_generation_fuel_monthly.year, eia923_generation_fuel_monthly.month, 1)"
+      plant_id: eia923_generation_fuel_monthly.plant_id
+      fuel_type: eia923_generation_fuel_monthly.reported_fuel_type_code
+      prime_mover: eia923_generation_fuel_monthly.reported_prime_mover
+      period_hours: "24 * day(last_day(make_date(eia923_generation_fuel_monthly.year, eia923_generation_fuel_monthly.month, 1)))"
+      capacity_mw: eia860_capacity_by_pm_fuel.net_summer_capacity_mw   # capacity_basis = net_summer
+      net_mwh: eia923_generation_fuel_monthly.net_generation_mwh
+      fuel_mmbtu: eia923_generation_fuel_monthly.elec_fuel_consumption_mmbtu   # heat_rate_basis = hhv (EIA reports HHV)

@@ -1,0 +1,43 @@
+[task]
+id = "c02-price-plot"
+tier = "P"
+title = "Plot residential retail prices by state"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c02_price_plot"
+instruction = """
+Plot the 2023 monthly residential electricity price for every state on one chart and save it as ./figures/retail_prices.png. Which state had the highest average price over the year?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "highest_avg_price_state"
+kind = "string"
+description = "State abbreviation with the highest 2023 average price."
+
+[[check]]
+type = "exact"
+key = "highest_avg_price_state"
+points = 60
+
+[[check]]
+type = "file_exists"
+path = "figures/retail_prices.png"
+points = 40

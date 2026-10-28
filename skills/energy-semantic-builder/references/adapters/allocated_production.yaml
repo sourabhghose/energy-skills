@@ -1,0 +1,25 @@
+# Adapter: a typical allocated daily production table (production accounting / PPDM-style
+# volume summary flattened to one row per well per day) plus a monthly LOE table.
+name: allocated_production
+entities:
+  well_day:
+    source: <catalog>.<schema>.allocated_daily_volumes   # REVIEW
+    fields:
+      well_id: uwi
+      production_date: prod_date
+      field_name: field_name
+      oil_bbl: oil_vol_bbl
+      gas_mcf: "gas_vol_mscf"            # REVIEW: Mscf = Mcf; if reported in m3, convert (x 0.0353147)
+      ngl_bbl: ngl_vol_bbl
+      water_bbl: water_vol_bbl
+      producing_hours: hours_on
+  well_month:
+    source: <catalog>.<schema>.well_monthly_loe          # REVIEW: volumes + LOE already at well-month
+    fields:
+      well_id: uwi
+      production_month: month_start
+      field_name: field_name
+      oil_bbl: oil_vol_bbl
+      gas_mcf: gas_vol_mscf
+      water_bbl: water_vol_bbl
+      loe_usd: loe_usd

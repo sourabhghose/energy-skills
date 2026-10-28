@@ -1,0 +1,40 @@
+[task]
+id = "r08-nsrdb-pv-yield"
+tier = "R"
+title = "Expected PV yield from NSRDB irradiance"
+domain = "Renewables & Markets"
+intended_skills = ["wind-solar-performance"]
+det_weight = 0.0
+datasets = ["nsrdb_psm3_2022"]
+instruction = """
+Estimate the 2022 AC energy of a 1 MWdc fixed-tilt PV system (tilt 30 degrees, azimuth 180, DC/AC 1.25, 14 % system losses) at the NSRDB location, from the hourly irradiance and weather data.
+"""
+rubric = """
+Criterion 1: Transposition
+    Levels: A=40 B=13 C=0
+      [A]: Transposes GHI/DNI/DHI to plane of array with solar position (e.g. pvlib) using the timestamps' time zone and mid-interval sun position.
+      [B]: Uses GHI as POA.
+      [C]: No irradiance model.
+Criterion 2: Electrical model
+    Levels: A=35 B=11 C=0
+      [A]: Applies temperature losses, system losses and inverter clipping at 800 kW AC.
+      [B]: Partial.
+      [C]: None.
+Criterion 3: Reporting
+    Levels: A=25 B=8 C=0
+      [A]: Monthly energy, specific yield and assumptions.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "annual_ac_mwh"
+kind = "number"
+unit = "MWh"
+description = "Estimated 2022 AC energy."
+
+[[answer]]
+key = "specific_yield_kwh_per_kwp"
+kind = "number"
+unit = "kWh/kWp"
+description = "AC energy per kWp DC."

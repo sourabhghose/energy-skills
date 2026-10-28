@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "iso-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/iso/iso-001",
+    "query": "Using ERCOT real-time settlement point prices for HB_NORTH in /Volumes/energy_catalog/energy_skills/eval/iso/iso-001/prices.csv, give me the November 2025 on-peak (5x16) and off-peak average prices and the number of hours in the month. Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/iso/out/<ARM>/iso-001/."
+  },
+  {
+    "task_id": "iso-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/iso/iso-002",
+    "query": "Compute hourly real-time LMPs for MY_PNODE from the PJM 5-minute data in /Volumes/energy_catalog/energy_skills/eval/iso/iso-002/prices.csv. What was the hourly price for the hour starting 2025-07-15 20:00 UTC? Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/iso/out/<ARM>/iso-002/."
+  },
+  {
+    "task_id": "iso-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/iso/iso-003",
+    "query": "Which NYISO zone in /Volumes/energy_catalog/energy_skills/eval/iso/iso-003/prices.csv had the largest congestion impact on price in the first week of August 2025, and what was its average congestion adder in $/MWh? Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/iso/out/<ARM>/iso-003/."
+  },
+  {
+    "task_id": "iso-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/iso/iso-004",
+    "query": "Our CAISO battery BESS_1_APND settles in the 5-minute real-time market only. Using prices and metered MWh in /Volumes/energy_catalog/energy_skills/eval/iso/iso-004/prices.csv (charging is negative), what was its real-time energy revenue on 2025-09-10? Save results and an answer.json under /Volumes/energy_catalog/energy_skills/eval/iso/out/<ARM>/iso-004/."
+  }
+]

@@ -1,0 +1,45 @@
+[task]
+id = "r06-caiso-np15-dam"
+tier = "R"
+title = "CAISO NP15 day-ahead prices, January 2024"
+domain = "Renewables & Markets"
+intended_skills = ["iso-market-data"]
+det_weight = 0.0
+datasets = ["caiso_np15_dam_2024_01"]
+instruction = """
+From CAISO OASIS day-ahead LMPs at TH_NP15_GEN-APND for January 2024, report the average LMP, the number of negative-price hours, and the average energy, congestion and loss components. State the time convention you used.
+"""
+rubric = """
+Criterion 1: Time convention
+    Levels: A=35 B=11 C=0
+      [A]: Uses OASIS interval start/end GMT columns, converts to Pacific prevailing time, and restricts to the local month.
+      [B]: Uses GMT dates as local.
+      [C]: Ignores time.
+Criterion 2: LMP decomposition
+    Levels: A=35 B=11 C=0
+      [A]: Pivots LMP_TYPE rows (LMP, MCE, MCC, MCL, MGHG) correctly and checks LMP = sum of components.
+      [B]: Partial.
+      [C]: Mixes types.
+Criterion 3: Reporting
+    Levels: A=30 B=10 C=0
+      [A]: Results with units and checks (744 hours).
+      [B]: Results only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "avg_lmp_usd_per_mwh"
+kind = "number"
+unit = "$/MWh"
+description = "Average DA LMP, January 2024 (Pacific time month)."
+
+[[answer]]
+key = "negative_price_hours"
+kind = "number"
+description = "Hours with LMP below zero."
+
+[[answer]]
+key = "components_avg_usd_per_mwh"
+kind = "map"
+unit = "$/MWh"
+description = "energy, congestion, loss -> average."

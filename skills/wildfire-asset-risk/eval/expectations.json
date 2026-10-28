@@ -1,0 +1,120 @@
+[
+  {
+    "task_id": "wf-001",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Asks the user for (or explicitly states) likelihood weights and consequence basis rather than inventing them silently",
+        "Segments are indexed along the full span (h3_coverash3 or densified points), not only at pole endpoints",
+        "SPAN1 ranks first because its conductor crosses a hazardous, populated pocket"
+      ],
+      "guidelines": [
+        "Do not min-max rescale scores over the network without saying so"
+      ]
+    },
+    "deterministic_checks": {
+      "top_k_contains": {
+        "key": "top5_segments",
+        "must_include": [
+          "SPAN1"
+        ]
+      }
+    }
+  },
+  {
+    "task_id": "wf-002",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "Forecast is converted from km/h and deg C to mph and deg F before applying the protocol",
+        "Circuit Z meets the weather thresholds but is not in a high fire-threat district and is excluded",
+        "PSPS candidates are Q and T"
+      ],
+      "guidelines": [
+        "Present the result as screening, not a de-energization decision"
+      ]
+    },
+    "deterministic_checks": {
+      "set_equals": {
+        "key": "psps_circuits",
+        "truth": "psps_circuits"
+      }
+    }
+  },
+  {
+    "task_id": "wf-003",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Risk reduction per dollar (risk-spend efficiency) drives the order",
+        "Total cost stays within $300,000",
+        "Segments that do not fit are skipped rather than ending the selection"
+      ],
+      "guidelines": [
+        "State that greedy selection is a heuristic"
+      ]
+    },
+    "deterministic_checks": {
+      "budget": {
+        "key": "total_cost_usd",
+        "max": 300000.0
+      },
+      "set_overlap": {
+        "key": "selected_segments",
+        "truth": "selected_segments",
+        "min_jaccard": 0.7
+      }
+    }
+  },
+  {
+    "task_id": "wf-004",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "Three segments (P0, P1, P2) have latitude and longitude swapped and are flagged before scoring",
+        "Asks the user for (or explicitly states) likelihood weights and consequence basis rather than inventing them silently"
+      ],
+      "guidelines": [
+        "Do not silently drop or score the swapped rows"
+      ]
+    },
+    "deterministic_checks": {
+      "mentions_all": {
+        "key": "data_quality_issues",
+        "tokens": [
+          "P0",
+          "P1",
+          "P2"
+        ]
+      }
+    }
+  },
+  {
+    "task_id": "wf-005",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "The shared layer is aggregated to coarse cells (e.g. H3 res 7) with no segment ids, circuit ids or coordinates",
+        "CEII sensitivity of line locations is called out"
+      ],
+      "guidelines": [
+        "Do not export segment-level coordinates"
+      ]
+    },
+    "deterministic_checks": {
+      "forbidden_columns": {
+        "key": "columns",
+        "forbidden": [
+          "segment_id",
+          "circuit_id",
+          "lat1",
+          "lon1",
+          "lat2",
+          "lon2",
+          "lat",
+          "lon"
+        ]
+      }
+    }
+  }
+]

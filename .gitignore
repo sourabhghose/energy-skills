@@ -1,0 +1,41 @@
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+
+# pytests results
+.pytest_cache/
+**/tests/results/
+
+# Local agent skill installs (project consumers)
+.claude/skills/
+.cursor/skills/
+.agents/skills/
+
+# Local Isaac tooling state
+.isaac/
+
+# Local reference clones
+.ref-*/
+.ref-tmp/
+
+# Environment / secrets
+.env
+.env.local
+*.pem
+
+# MkDocs build output
+site/

@@ -1,0 +1,85 @@
+[task]
+id = "p06-ceii-share"
+tier = "P"
+title = "Shareable feeder summary without CEII or customer PII"
+domain = "Power & Utilities"
+intended_skills = ["grid-data-guard"]
+det_weight = 0.7
+generator = "power.p06_ceii_share"
+instruction = """
+An external consultant is building a load-growth model and asked for a feeder-level summary they can map. Prepare
+./share/feeder_summary.csv with one row per feeder and at least the columns feeder_id, customer_count and
+total_mwh (2024 annual energy), plus whatever location information you think is appropriate to share. The file will
+leave the company.
+"""
+rubric = """
+Criterion 1: CEII protection
+    Levels: A=40 B=15 C=0
+      [A]: Does not share precise substation coordinates (coarsens to about 1 km or to a region) and does not expose substation names that identify locations; explains why (CEII).
+      [B]: Coarsens coordinates partially or shares names with coarse coordinates.
+      [C]: Shares surveyed coordinates.
+Criterion 2: Customer privacy
+    Levels: A=35 B=15 C=0
+      [A]: No customer names, addresses or IDs; suppresses or aggregates feeders with fewer than a minimum number of customers (for example the 15/15 rule or k >= 5) so no single customer's usage can be inferred.
+      [B]: Removes direct identifiers but leaves tiny feeders or small rate-class cells.
+      [C]: Customer-level data leaks.
+Criterion 3: Usefulness and documentation
+    Levels: A=25 B=10 C=0
+      [A]: The summary is complete for the remaining feeders, totals reconcile, and the suppression rule is documented.
+      [B]: Usable but undocumented.
+      [C]: Not usable.
+"""
+
+[[answer]]
+key = "suppressed_feeders"
+kind = "list"
+description = "feeder_id values withheld or aggregated for privacy (empty list if none)."
+
+[[answer]]
+key = "location_precision"
+kind = "string"
+description = "How location is represented in the shared file (for example 'lat/lon rounded to 2 decimals')."
+
+[[check]]
+type = "file_exists"
+path = "share/feeder_summary.csv"
+points = 10
+
+[[check]]
+type = "file_forbid"
+path = "share/*"
+regex_from = "forbidden_regex"
+points = 25
+
+[[check]]
+type = "file_forbid"
+path = "share/*"
+literals_from = "forbidden_literals"
+points = 20
+
+[[check]]
+type = "csv_min"
+path = "share/feeder_summary.csv"
+column = "customer_count"
+min = 5
+points = 15
+
+[[check]]
+type = "csv_sum_any"
+path = "share/feeder_summary.csv"
+column = "total_mwh"
+expected_any = ["total_mwh_all", "total_mwh_excluding_small"]
+rel_tol = 0.002
+points = 10
+
+[[check]]
+type = "set_f1"
+key = "suppressed_feeders"
+expected = "small_feeders"
+points = 10
+
+[[check]]
+type = "decision"
+patterns = [["CEII", "critical energy infrastructure", "critical infrastructure"], ["suppress", "aggregat", "k[- ]?anonym", "minimum", "15/15"]]
+example = "Substation coordinates are CEII, rounded to 2 decimals; feeders with fewer than 5 customers suppressed"
+points = 10

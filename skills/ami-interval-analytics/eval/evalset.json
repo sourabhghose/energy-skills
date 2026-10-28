@@ -1,0 +1,22 @@
+[
+  {
+    "task_id": "ami-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ami/ami-001",
+    "query": "interval_reads.csv in /Volumes/energy_catalog/energy_skills/eval/ami/ami-001 has 15-minute smart-meter reads for 50 meters in Illinois. Load it into energy_catalog.eval_<ARM>.ami001_reads, produce a cleaned interval table, and report the fleet's total kWh for each local calendar day from 2024-11-01 to 2024-11-09 and the number of intervals per meter on each of those days."
+  },
+  {
+    "task_id": "ami-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ami/ami-002",
+    "query": "Validate the June smart-meter interval data in /Volumes/energy_catalog/energy_skills/eval/ami/ami-002 (interval_reads.csv, premises.csv; meters are in Texas, America/Chicago). Flag bad reads, fill what is reasonable, and report the fleet's net June consumption in kWh, total exported kWh, and how many intervals you estimated. Write results to energy_catalog.eval_<ARM>.ami002_vee."
+  },
+  {
+    "task_id": "ami-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ami/ami-003",
+    "query": "register_reads.csv in /Volumes/energy_catalog/energy_skills/eval/ami/ami-003 holds 15-minute kWh register reads (UTC) for 20 meters. Convert them to 15-minute interval consumption, write energy_catalog.eval_<ARM>.ami003_intervals, and report total fleet consumption for the period plus any meters with data problems."
+  },
+  {
+    "task_id": "ami-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/ami/ami-004",
+    "query": "Using interval_reads.csv in /Volumes/energy_catalog/energy_skills/eval/ami/ami-004 (30 Chicago-area meters, March 2024), compute each meter's March kWh and the share of that energy that was actually metered rather than estimated. Report the fleet total and write energy_catalog.eval_<ARM>.ami004_monthly."
+  }
+]

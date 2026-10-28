@@ -1,0 +1,60 @@
+[task]
+id = "p21-scope1"
+tier = "P"
+title = "Scope 1 stationary combustion with mixed fuel units"
+domain = "Emissions & ESG"
+intended_skills = ["ghg-emissions-calculator"]
+det_weight = 0.7
+generator = "accounting.p21_scope1"
+instruction = """
+Compute 2024 Scope 1 stationary combustion emissions for our six plants: total CO2 and total CO2e (CO2 + CH4 + N2O)
+in metric tonnes.
+"""
+rubric = """
+Criterion 1: Unit conversion
+    Levels: A=40 B=15 C=0
+      [A]: Converts every natural gas unit (therm, ccf, Mcf, MMBtu) to MMBtu with the provided factors before applying emission factors.
+      [B]: One unit mishandled.
+      [C]: Applies per-MMBtu factors to raw quantities.
+Criterion 2: Gases and GWP
+    Levels: A=35 B=15 C=0
+      [A]: Includes CH4 and N2O with explicit GWP values, states which assessment report (AR5 or AR6) and why.
+      [B]: Includes them without stating the GWP basis.
+      [C]: CO2 only.
+Criterion 3: Reporting
+    Levels: A=25 B=10 C=0
+      [A]: By site and gas, with units and factor sources.
+      [B]: Totals only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "co2_tonnes"
+kind = "number"
+unit = "t CO2"
+description = "Total CO2."
+
+[[answer]]
+key = "scope1_tco2e"
+kind = "number"
+unit = "tCO2e"
+description = "Total CO2e (CO2 + CH4 + N2O)."
+
+[[check]]
+type = "numeric"
+key = "co2_tonnes"
+rel_tol = 0.002
+points = 40
+
+[[check]]
+type = "numeric_any"
+key = "scope1_tco2e"
+expected_any = ["scope1_tco2e_ar5", "scope1_tco2e_ar6"]
+rel_tol = 0.002
+points = 40
+
+[[check]]
+type = "decision"
+patterns = [["AR5", "AR6", "assessment report", "GWP"]]
+example = "GWP from IPCC AR5 to match the regulatory program"
+points = 20

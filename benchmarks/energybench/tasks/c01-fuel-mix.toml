@@ -1,0 +1,50 @@
+[task]
+id = "c01-fuel-mix"
+tier = "P"
+title = "Wind and solar share of state generation"
+domain = "Control"
+intended_skills = []
+det_weight = 0.8
+generator = "controls.c01_fuel_mix"
+instruction = """
+What share of Texas's 2023 net generation came from wind and solar combined, and which state had the highest wind-plus-solar share in 2023?
+"""
+rubric = """
+Criterion 1: Correct analysis
+    Levels: A=50 B=20 C=0
+      [A]: The computation answers exactly what was asked, with correct filtering, grouping and arithmetic.
+      [B]: Minor error or ambiguity.
+      [C]: Wrong.
+Criterion 2: Data handling
+    Levels: A=30 B=10 C=0
+      [A]: Reads the files correctly, checks for duplicates, blanks and inconsistent text, and handles them sensibly.
+      [B]: Some checks.
+      [C]: None.
+Criterion 3: Communication
+    Levels: A=20 B=10 C=0
+      [A]: States the result with units and any assumption in a sentence or two.
+      [B]: Result only.
+      [C]: Missing.
+"""
+
+[[answer]]
+key = "wind_solar_share_tx_2023_pct"
+kind = "number"
+unit = "%"
+description = "Wind + solar share of TX 2023 net generation."
+
+[[answer]]
+key = "top_wind_solar_state_2023"
+kind = "string"
+description = "State abbreviation with the highest 2023 wind + solar share."
+
+[[check]]
+type = "numeric"
+key = "wind_solar_share_tx_2023_pct"
+abs_tol = 0.05
+points = 60
+
+[[check]]
+type = "exact"
+key = "top_wind_solar_state_2023"
+points = 40

@@ -1,0 +1,33 @@
+name: fixture_co
+description: Test mapping covering upstream daily, generation (GADS) and reliability.
+target: { catalog: main, schema: energy_semantic }
+entities:
+  well_day:
+    source: main.ops_raw.daily_volumes
+    fields:
+      well_id: uwi
+      production_date: prod_date
+      field_name: field
+      oil_bbl: oil_bbl
+      gas_mcf: "gas_m3 * 0.0353147"
+      water_bbl: wtr_bbl
+  unit_period:
+    source: main.gen_raw.gads_monthly
+    fields:
+      unit_id: unit_code
+      period_start: "make_date(yr, mo, 1)"
+      period_hours: ph
+      capacity_mw: nmc
+      net_mwh: net_gen
+      gross_mwh: gross_gen
+      fuel_mmbtu: heat_input_mmbtu
+      service_hours: sh
+      available_hours: ah
+      forced_outage_hours: foh
+      eudh: eudh
+      epdh: epdh
+      esedh: esedh
+      efdh: efdh
+      efdhrs: efdhrs
+    enums:
+      fuel_type: { source_column: fuel_cd, map: { "NG": natural_gas, "COL": "coal" }, default: other }

@@ -1,0 +1,81 @@
+{
+  "note": "Public datasets behind tier-R tasks. `verified` is the date the URL was checked to respond with the expected content type. sha256 pins live in datasets.lock.json, written by `fetch.py --write-lock` after the first download; later fetches must match the lock. `moving: true` marks sources that republish in place (pins will drift; re-lock deliberately). Licenses: check each source's terms before redistributing.",
+  "datasets": {
+    "eia930_balance_2024h1": {
+      "title": "EIA-930 Hourly Electric Grid Monitor, balance file, Jan-Jun 2024",
+      "files": [{"url": "https://www.eia.gov/electricity/gridmonitor/sixMonthFiles/EIA930_BALANCE_2024_Jan_Jun.csv", "name": "EIA930_BALANCE_2024_Jan_Jun.csv"}],
+      "license": "U.S. Government work (EIA), public domain; see https://www.eia.gov/about/copyrights_reuse.php",
+      "verified": "2026-10-28"
+    },
+    "eia861_2023": {
+      "title": "EIA-861 Annual Electric Power Industry Report, 2023 (includes Reliability file)",
+      "files": [{"url": "https://www.eia.gov/electricity/data/eia861/archive/zip/f8612023.zip", "name": "f8612023.zip"}],
+      "license": "U.S. Government work (EIA), public domain; see https://www.eia.gov/about/copyrights_reuse.php",
+      "verified": "2026-10-28"
+    },
+    "egrid2023": {
+      "title": "EPA eGRID2023 data file (rev 2)",
+      "files": [{"url": "https://www.epa.gov/system/files/documents/2025-06/egrid2023_data_rev2.xlsx", "name": "egrid2023_data_rev2.xlsx"}],
+      "license": "U.S. Government work (EPA), public domain",
+      "verified": "2026-10-28"
+    },
+    "ghgrp_2023_summary": {
+      "title": "EPA GHGRP 2023 data summary spreadsheets",
+      "files": [{"url": "https://www.epa.gov/system/files/other-files/2024-10/2023_data_summary_spreadsheets.zip", "name": "2023_data_summary_spreadsheets.zip"}],
+      "license": "U.S. Government work (EPA), public domain",
+      "verified": "2026-10-28"
+    },
+    "kelmarsh_2022": {
+      "title": "Kelmarsh wind farm SCADA 2022 and turbine static data (Cubico, Zenodo record 16807551)",
+      "files": [
+        {"url": "https://zenodo.org/records/16807551/files/Kelmarsh_SCADA_2022_4457.zip?download=1", "name": "Kelmarsh_SCADA_2022_4457.zip"},
+        {"url": "https://zenodo.org/records/16807551/files/Kelmarsh_WT_static.csv?download=1", "name": "Kelmarsh_WT_static.csv"}
+      ],
+      "license": "CC BY 4.0 (Zenodo record metadata)",
+      "verified": "2026-10-28"
+    },
+    "caiso_np15_dam_2024_01": {
+      "title": "CAISO OASIS day-ahead LMP, TH_NP15_GEN-APND, January 2024",
+      "files": [{"url": "https://oasis.caiso.com/oasisapi/SingleZip?queryname=PRC_LMP&market_run_id=DAM&startdatetime=20240101T08:00-0000&enddatetime=20240201T08:00-0000&version=12&node=TH_NP15_GEN-APND&resultformat=6", "name": "caiso_np15_dam_2024_01.zip"}],
+      "license": "CAISO OASIS public market data; see CAISO terms of use (https://www.caiso.com/legal)",
+      "notes": "OASIS rate-limits bursts (HTTP 429); fetch.py retries with back-off. The zip's inner file name embeds the request time, so pin the extracted CSV, not the zip.",
+      "pin": "extracted",
+      "verified": "2026-10-28"
+    },
+    "london_lcl": {
+      "title": "SmartMeter Energy Consumption Data in London Households (Low Carbon London), full data",
+      "files": [{"url": "https://data.london.gov.uk/download/smartmeter-energy-use-data-in-london-households/3527bf39-d93e-4071-8451-df2ade1ea4f2/LCL-FullData.zip", "name": "LCL-FullData.zip"}],
+      "license": "TODO verify: see https://data.london.gov.uk/dataset/smartmeter-energy-use-data-in-london-households",
+      "notes": "Large (several GB uncompressed). The task only needs a subset of households.",
+      "verified": "2026-10-28"
+    },
+    "nsrdb_psm3_2022": {
+      "title": "NREL NSRDB PSM v3.2.2 hourly, 2022, Golden CO (39.74, -105.18)",
+      "files": [{"url": "https://developer.nlr.gov/api/nsrdb/v2/solar/psm3-2-2-download.csv?wkt=POINT(-105.18%2039.74)&names=2022&interval=60&utc=false&attributes=ghi,dni,dhi,air_temperature,wind_speed,solar_zenith_angle&api_key={NREL_API_KEY}&email={NREL_EMAIL}", "name": "nsrdb_golden_2022.csv"}],
+      "env": ["NREL_API_KEY", "NREL_EMAIL"],
+      "license": "NREL NSRDB terms of use (https://nsrdb.nrel.gov/about/data-disclaimer); API key required",
+      "notes": "NREL developer API moved to developer.nlr.gov; the old developer.nrel.gov host did not respond when verified.",
+      "verified": "2026-10-28"
+    },
+    "rrc_pdq": {
+      "title": "Texas RRC Production Data Query (PDQ) dump, CSV",
+      "files": [{"url": "https://mft.rrc.texas.gov/link/1f5ddb8d-329a-4459-b7f8-177b4f5ee60d", "name": "PDQ_DSV.zip"}],
+      "manual": true,
+      "moving": true,
+      "license": "Texas public information (Railroad Commission of Texas); see https://www.rrc.texas.gov/site-policies/",
+      "notes": "The link opens the RRC managed file transfer site; download PDQ_DSV.zip in a browser and place it in $EB_HOME/manual/rrc_pdq/. Republished monthly (last Saturday). Manual: https://www.rrc.texas.gov/media/50ypu2cg/pdq-dump-user-manual.pdf",
+      "verified": "2026-10-28"
+    },
+    "volve": {
+      "title": "Equinor Volve field data village: production data and well logs",
+      "files": [
+        {"url": "https://www.equinor.com/energy/volve-data-sharing", "name": "Volve production data.xlsx"},
+        {"url": "https://www.equinor.com/energy/volve-data-sharing", "name": "15_9-F-14.LAS"}
+      ],
+      "manual": true,
+      "license": "Equinor Open Data Licence (accepted on registration)",
+      "notes": "Requires registration and licence acceptance. Download the production workbook and the 15/9-F-14 log file and place them in $EB_HOME/manual/volve/ with the names above.",
+      "verified": "2026-10-28"
+    }
+  }
+}

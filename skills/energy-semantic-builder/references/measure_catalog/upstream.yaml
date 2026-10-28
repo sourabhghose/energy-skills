@@ -1,0 +1,113 @@
+# DOMAIN: upstream — oil & gas production and lease operating cost.
+#
+# Measure record schema (all domains):
+#   name / type (atomic | composite) / metric_view (mv_<domain>__<name>)
+#   entity      atomic only: canonical entity it aggregates
+#   expr        metric-view expression; atomics aggregate canonical fields,
+#               composites use MEASURE(...) of measures in the SAME metric view
+#   depends_on  composite only
+#   unit / definition / reference / anti_pattern
+#   {placeholder}  substituted from references/decisions.yaml at generation time
+
+domain: upstream
+
+metric_views:
+  - name: mv_upstream__well_day
+    entity: well_day
+    grain: well_day
+  - name: mv_upstream__well_month
+    entity: well_month
+    grain: well_month
+
+measures:
+  - { name: oil_volume_bbl, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "SUM(oil_bbl)", unit: bbl, definition: "Allocated oil volume." }
+  - { name: gas_volume_mcf, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "SUM(gas_mcf)", unit: Mcf, definition: "Allocated gas volume." }
+  - { name: ngl_volume_bbl, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "SUM(COALESCE(ngl_bbl, 0))", unit: bbl, definition: "Allocated NGL / condensate volume." }
+  - { name: water_volume_bbl, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "SUM(water_bbl)", unit: bbl, definition: "Produced water volume." }
+  - name: boe_volume
+    type: atomic
+    metric_view: mv_upstream__well_day
+    entity: well_day
+    expr: "SUM(oil_bbl + COALESCE(ngl_bbl, 0) + gas_mcf / {gas_mcf_per_boe})"
+    unit: boe
+    decisions: [gas_mcf_per_boe]
+    definition: "Barrels of oil equivalent; gas converted at the confirmed Mcf-per-boe ratio."
+    anti_pattern: "Hard-coding 6:1 without stating it, or converting at price parity in a volume KPI."
+  - { name: well_day_count, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "COUNT(1)", unit: well-days, definition: "Well-days in the slice (denominator for per-well-day rates)." }
+  - { name: calendar_days, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "COUNT(DISTINCT production_date)", unit: days, definition: "Distinct production days in the slice." }
+  - { name: active_well_count, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "COUNT(DISTINCT CASE WHEN oil_bbl + gas_mcf > 0 THEN well_id END)", unit: wells,
+      definition: "Wells with any oil or gas volume in the slice." }
+  - { name: producing_hours_total, type: atomic, metric_view: mv_upstream__well_day, entity: well_day,
+      expr: "SUM(producing_hours)", unit: h, definition: "Hours wells flowed." }
+  - name: boe_per_day
+    type: composite
+    metric_view: mv_upstream__well_day
+    expr: "MEASURE(boe_volume) / NULLIF(MEASURE(calendar_days), 0)"
+    depends_on: [boe_volume, calendar_days]
+    unit: boe/d
+    definition: "Average daily production rate of the slice (total boe / calendar days)."
+    anti_pattern: "Averaging per-well daily rates, or dividing by well-days (that is boe per well-day)."
+  - name: oil_per_day_bbl
+    type: composite
+    metric_view: mv_upstream__well_day
+    expr: "MEASURE(oil_volume_bbl) / NULLIF(MEASURE(calendar_days), 0)"
+    depends_on: [oil_volume_bbl, calendar_days]
+    unit: bbl/d
+    definition: "Average daily oil rate of the slice."
+  - name: boe_per_well_day
+    type: composite
+    metric_view: mv_upstream__well_day
+    expr: "MEASURE(boe_volume) / NULLIF(MEASURE(well_day_count), 0)"
+    depends_on: [boe_volume, well_day_count]
+    unit: boe/well-day
+    definition: "Average production per well per day."
+  - name: uptime_pct
+    type: composite
+    metric_view: mv_upstream__well_day
+    expr: "100 * MEASURE(producing_hours_total) / NULLIF(MEASURE(well_day_count) * 24, 0)"
+    depends_on: [producing_hours_total, well_day_count]
+    unit: "%"
+    definition: "Share of available well-hours the wells flowed."
+  - name: gas_oil_ratio_scf_per_bbl
+    type: composite
+    metric_view: mv_upstream__well_day
+    expr: "1000 * MEASURE(gas_volume_mcf) / NULLIF(MEASURE(oil_volume_bbl), 0)"
+    depends_on: [gas_volume_mcf, oil_volume_bbl]
+    unit: scf/bbl
+    definition: "Producing gas-oil ratio (ratio of sums)."
+    anti_pattern: "Averaging per-well GOR; mixing scf and Mcf."
+  - name: water_cut_pct
+    type: composite
+    metric_view: mv_upstream__well_day
+    expr: "100 * MEASURE(water_volume_bbl) / NULLIF(MEASURE(oil_volume_bbl) + MEASURE(water_volume_bbl), 0)"
+    depends_on: [water_volume_bbl, oil_volume_bbl]
+    unit: "%"
+    definition: "Water as a share of total liquids (water / (oil + water)), ratio of sums."
+    anti_pattern: "Averaging per-well water cuts; dividing water by oil (that is WOR)."
+
+  # ── well_month: cost per boe needs cost and volume on one grain ────────────
+  - { name: loe_total_usd, type: atomic, metric_view: mv_upstream__well_month, entity: well_month,
+      expr: "SUM(loe_usd)", unit: USD, definition: "Lease operating expense." }
+  - name: boe_volume_month
+    type: atomic
+    metric_view: mv_upstream__well_month
+    entity: well_month
+    expr: "SUM(oil_bbl + COALESCE(ngl_bbl, 0) + gas_mcf / {gas_mcf_per_boe})"
+    unit: boe
+    decisions: [gas_mcf_per_boe]
+    definition: "Monthly boe, same conversion as boe_volume."
+  - name: loe_per_boe_usd
+    type: composite
+    metric_view: mv_upstream__well_month
+    expr: "MEASURE(loe_total_usd) / NULLIF(MEASURE(boe_volume_month), 0)"
+    depends_on: [loe_total_usd, boe_volume_month]
+    unit: USD/boe
+    definition: "Lifting cost: LOE divided by boe produced (ratio of sums)."
+    anti_pattern: "Averaging per-well $/boe; joining daily volumes to monthly cost (fan-out double count)."

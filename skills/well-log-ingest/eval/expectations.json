@@ -1,0 +1,189 @@
+[
+  {
+    "task_id": "wli-001",
+    "difficulty": "hard",
+    "expectations": {
+      "expected_facts": [
+        "RHOZ in K/M3 is divided by 1000 to g/cm3",
+        "TNPH labelled V/V but valued ~20-30 is recognized as percent and converted to v/v after confirmation; blank-unit NPOR likewise",
+        "DTCO in US/M is multiplied by 0.3048 to us/ft",
+        "-9999 values in GR are treated as nulls (beyond the header NULL of -999.25)",
+        "Depths are converted from KB to GL using EKB - EGL (25 ft)",
+        "Colorado API numbers stored without the leading zero (9 digits) are restored to 05... after confirmation and kept as strings"
+      ],
+      "guidelines": [
+        "Do not average curves with mixed units",
+        "Do not cast API numbers to integers"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [
+        "curve_means.csv"
+      ],
+      "required_action_tokens": [
+        "K/M3",
+        "percent",
+        "-9999",
+        "GL",
+        "05123456780000"
+      ],
+      "forbidden_patterns": [
+        "astype\\(int\\)\\s*#?\\s*api",
+        "int\\(api"
+      ],
+      "numeric_answers": {
+        "05123456780000.mean_rhob_gcc": {
+          "value": 2.44275,
+          "rel_tol": 0.005
+        },
+        "05123456780000.mean_nphi_vv": {
+          "value": 0.20342,
+          "rel_tol": 0.01
+        },
+        "05123456780000.mean_gr_gapi": {
+          "value": 71.6237,
+          "rel_tol": 0.005
+        },
+        "05123456790000.mean_rhob_gcc": {
+          "value": 2.4425,
+          "rel_tol": 0.005
+        },
+        "05123456790000.mean_nphi_vv": {
+          "value": 0.20305,
+          "rel_tol": 0.01
+        },
+        "05123456790000.mean_gr_gapi": {
+          "value": 71.7813,
+          "rel_tol": 0.005
+        },
+        "05123456800000.mean_rhob_gcc": {
+          "value": 2.44186,
+          "rel_tol": 0.005
+        },
+        "05123456800000.mean_nphi_vv": {
+          "value": 0.20342,
+          "rel_tol": 0.01
+        },
+        "05123456800000.mean_gr_gapi": {
+          "value": 71.2749,
+          "rel_tol": 0.005
+        },
+        "42317400010000.mean_rhob_gcc": {
+          "value": 2.44237,
+          "rel_tol": 0.005
+        },
+        "42317400010000.mean_nphi_vv": {
+          "value": 0.20334,
+          "rel_tol": 0.01
+        },
+        "42317400010000.mean_gr_gapi": {
+          "value": 71.7502,
+          "rel_tol": 0.005
+        },
+        "42317400020000.mean_rhob_gcc": {
+          "value": 2.44315,
+          "rel_tol": 0.005
+        },
+        "42317400020000.mean_nphi_vv": {
+          "value": 0.20318,
+          "rel_tol": 0.01
+        },
+        "42317400020000.mean_gr_gapi": {
+          "value": 71.4044,
+          "rel_tol": 0.005
+        },
+        "42317400030000.mean_rhob_gcc": {
+          "value": 2.44214,
+          "rel_tol": 0.005
+        },
+        "42317400030000.mean_nphi_vv": {
+          "value": 0.20316,
+          "rel_tol": 0.01
+        },
+        "42317400030000.mean_gr_gapi": {
+          "value": 71.1015,
+          "rel_tol": 0.005
+        },
+        "top_depth_ft_below_gl": {
+          "value": 6975.0,
+          "rel_tol": 0.0001
+        }
+      }
+    },
+    "decision_answers": {
+      "unit_resolution": {
+        "TNPH": "PU",
+        "NPOR": "PU"
+      },
+      "sentinel_policy": "common_sentinels",
+      "depth_unit": "ft",
+      "depth_datum": "GL",
+      "api_zero_pad": "pad",
+      "family_conflict_policy": "keep_all",
+      "overlap_policy": "prefer_latest_run"
+    }
+  },
+  {
+    "task_id": "wli-002",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "The two runs overlap between 6,400 and 6,600 ft",
+        "The agent asks or states which run wins in the overlap (latest by log date)",
+        "Overlapping samples are not averaged across runs",
+        "The newer run reads ~25 gAPI hotter; the agent notes the offset between runs"
+      ],
+      "guidelines": [
+        "Keep both runs in the raw/long table"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [
+        "composite_gr.csv"
+      ],
+      "required_action_tokens": [
+        "overlap",
+        "2024-09-15"
+      ],
+      "forbidden_patterns": [],
+      "numeric_answers": {
+        "gr_mean_in_overlap": {
+          "value": 93.048,
+          "rel_tol": 0.005
+        }
+      }
+    },
+    "decision_answers": {
+      "overlap_policy": "prefer_latest_run",
+      "sentinel_policy": "header_null_only",
+      "depth_unit": "ft",
+      "depth_datum": "as_logged",
+      "family_conflict_policy": "keep_all",
+      "unit_resolution": {}
+    }
+  },
+  {
+    "task_id": "wli-003",
+    "difficulty": "medium",
+    "expectations": {
+      "expected_facts": [
+        "The log is measured depth (MD) in metres in a horizontal well",
+        "TVDSS cannot be computed from MD and KB elevation alone in a deviated well; a directional survey is required",
+        "The agent declines to produce TVDSS (or produces it only after a survey is supplied) and offers MD-based alternatives"
+      ],
+      "guidelines": [
+        "Never compute TVDSS as MD - KB elevation for a deviated well"
+      ]
+    },
+    "deterministic_checks": {
+      "required_artifacts": [],
+      "required_action_tokens": [
+        "survey"
+      ],
+      "forbidden_patterns": [
+        "tvdss\\s*=\\s*.*md\\s*-\\s*.*(kb|ekb|elev)"
+      ],
+      "numeric_answers": {}
+    }
+  }
+]

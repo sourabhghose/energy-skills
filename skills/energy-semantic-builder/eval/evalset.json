@@ -1,0 +1,27 @@
+[
+  {
+    "task_id": "sem-001",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_001",
+    "query": "Using the daily allocated volumes in /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_001, what was the EAGLE field's average production in boe per day for March 2025? Save your final answer as JSON to /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/out/<ARM>/sem-001/answer.json with keys boe_per_day, decisions."
+  },
+  {
+    "task_id": "sem-002",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_002",
+    "query": "What was the EAGLE field water cut in March 2025, based on /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_002? Save your final answer as JSON to /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/out/<ARM>/sem-002/answer.json with keys water_cut_pct."
+  },
+  {
+    "task_id": "sem-003",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_003",
+    "query": "Using the monthly GADS data in /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_003, what was our fleet equivalent availability factor (EAF) for 2024? Save your final answer as JSON to /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/out/<ARM>/sem-003/answer.json with keys eaf_pct, decisions."
+  },
+  {
+    "task_id": "sem-004",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_004",
+    "query": "Using /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_004, what was the fleet net capacity factor for 2024? nmc is net maximum capacity in MW. Save your final answer as JSON to /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/out/<ARM>/sem-004/answer.json with keys capacity_factor_pct."
+  },
+  {
+    "task_id": "sem-005",
+    "dataset": "/Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_005",
+    "query": "Create governed Unity Catalog metric views over the production and GADS data in /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/task_005 so Genie can answer boe/d, water cut, GOR, capacity factor, EAF and EFOR by month. Target schema energy_catalog.energy_skills_eval_<ARM>. Save your final answer as JSON to /Volumes/energy_catalog/energy_skills/eval/energy-semantic-builder/out/<ARM>/sem-005/answer.json with keys metric_view_sql, decisions."
+  }
+]

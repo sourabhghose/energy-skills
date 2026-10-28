@@ -1,0 +1,40 @@
+# DOMAIN: customer — retail billing KPIs.
+domain: customer
+
+metric_views:
+  - name: mv_customer__bill
+    entity: bill
+    grain: bill
+
+measures:
+  - { name: revenue_usd, type: atomic, metric_view: mv_customer__bill, entity: bill,
+      expr: "SUM(bill_amount_usd)", unit: USD, definition: "Billed revenue." }
+  - { name: billed_kwh_total, type: atomic, metric_view: mv_customer__bill, entity: bill,
+      expr: "SUM(billed_kwh)", unit: kWh, definition: "Billed energy." }
+  - { name: bill_count, type: atomic, metric_view: mv_customer__bill, entity: bill,
+      expr: "COUNT(DISTINCT bill_id)", unit: bills, definition: "Distinct bills." }
+  - { name: customer_count, type: atomic, metric_view: mv_customer__bill, entity: bill,
+      expr: "COUNT(DISTINCT customer_id)", unit: customers, definition: "Distinct billed customers." }
+  - name: avg_revenue_cents_per_kwh
+    type: composite
+    metric_view: mv_customer__bill
+    expr: "100 * MEASURE(revenue_usd) / NULLIF(MEASURE(billed_kwh_total), 0)"
+    depends_on: [revenue_usd, billed_kwh_total]
+    unit: cents/kWh
+    definition: "Average revenue per kWh (ratio of sums), comparable to EIA-861 average price."
+    anti_pattern: "Averaging per-bill cents/kWh (over-weights small bills)."
+    reference: "EIA-861"
+  - name: avg_bill_usd
+    type: composite
+    metric_view: mv_customer__bill
+    expr: "MEASURE(revenue_usd) / NULLIF(MEASURE(bill_count), 0)"
+    depends_on: [revenue_usd, bill_count]
+    unit: USD/bill
+    definition: "Average bill amount."
+  - name: avg_kwh_per_bill
+    type: composite
+    metric_view: mv_customer__bill
+    expr: "MEASURE(billed_kwh_total) / NULLIF(MEASURE(bill_count), 0)"
+    depends_on: [billed_kwh_total, bill_count]
+    unit: kWh/bill
+    definition: "Average consumption per bill."

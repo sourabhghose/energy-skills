@@ -1,0 +1,81 @@
+[task]
+id = "p08-iso-interval-ending"
+tier = "P"
+title = "Hourly real-time prices from 5-minute interval-ending LMPs"
+domain = "Renewables & Markets"
+intended_skills = ["iso-market-data"]
+det_weight = 0.7
+generator = "markets.p08_iso_interval_ending"
+instruction = """
+Settlements wants hourly real-time prices at HUB_NORTH for operating day 2024-07-15, by hour ending, and the total
+real-time energy cost of serving our hourly load at those prices. Which hour ending had the highest price?
+"""
+rubric = """
+Criterion 1: Interval convention
+    Levels: A=50 B=15 C=0
+      [A]: Maps each interval-ending timestamp to its hour ending (the interval ending at 18:00 belongs to HE18; the one ending at 00:00 the next day belongs to HE24) and averages the twelve 5-minute prices per hour.
+      [B]: Recognises the convention but mis-assigns boundary intervals.
+      [C]: Floors timestamps to the clock hour.
+Criterion 2: Cost calculation
+    Levels: A=30 B=10 C=0
+      [A]: Cost = sum over hours of load MW x 1 h x hourly price, with units.
+      [B]: Minor unit slip.
+      [C]: Wrong.
+Criterion 3: Validation
+    Levels: A=20 B=10 C=0
+      [A]: Checks there are 288 intervals and 12 per hour and notes the scarcity spikes.
+      [B]: Some checks.
+      [C]: None.
+"""
+
+[[answer]]
+key = "rt_price_he17"
+kind = "number"
+unit = "$/MWh"
+description = "Average real-time LMP for hour ending 17."
+
+[[answer]]
+key = "rt_price_he18"
+kind = "number"
+unit = "$/MWh"
+description = "Average real-time LMP for hour ending 18."
+
+[[answer]]
+key = "total_rt_cost_usd"
+kind = "number"
+unit = "$"
+description = "Total real-time cost of the day's hourly load."
+
+[[answer]]
+key = "max_price_hour_ending"
+kind = "number"
+description = "Hour ending (1-24) with the highest average price."
+
+[[check]]
+type = "numeric"
+key = "rt_price_he18"
+rel_tol = 0.0025
+points = 25
+
+[[check]]
+type = "numeric"
+key = "rt_price_he17"
+rel_tol = 0.0025
+points = 15
+
+[[check]]
+type = "numeric"
+key = "total_rt_cost_usd"
+rel_tol = 0.0025
+points = 30
+
+[[check]]
+type = "exact"
+key = "max_price_hour_ending"
+points = 15
+
+[[check]]
+type = "decision"
+patterns = [["interval[- ]ending", "hour[- ]ending", "HE\\d"]]
+example = "Interval-ending timestamps mapped to hour ending; 18:00 belongs to HE18"
+points = 15
