@@ -74,9 +74,13 @@ def test_geo_generalization_and_uniqueness(usage):
 
 
 def test_h3_when_available(usage):
-    pytest.importorskip("h3")
-    cells = generalize_point(usage["lat"].head(10), usage["lon"].head(10), "h3", 7)
-    assert cells.nunique() <= 3
+    h3 = pytest.importorskip("h3")
+    lat, lon = usage["lat"].head(50), usage["lon"].head(50)
+    cells = generalize_point(lat, lon, "h3", 7)
+    # Points scattered ~1 km around one site must collapse into a few ~2.4 km res-7 cells.
+    assert coordinate_uniqueness(lat, lon)["unique_points_pct"] > 90
+    assert cells.nunique() <= len(cells) // 5
+    assert all(h3.is_valid_cell(c) and h3.get_resolution(c) == 7 for c in cells)
 
 
 def test_hmac_token_is_salted_and_stable():

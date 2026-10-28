@@ -1,0 +1,16 @@
+# gitleaks config: default rules plus one narrow allowlist.
+# Loaded automatically by `gitleaks git .` from the repo root (see .github/workflows/ci.yml).
+
+[extend]
+useDefault = true
+
+# EnergyBench task specs declare answer fields as `key = "snake_case_name"`, which the
+# generic-api-key rule mistakes for a credential. The exception applies only to that rule and
+# only when the whole match is a lowercase snake_case identifier, so specific-format secrets
+# (GitHub, AWS, Databricks tokens, ...) and mixed-case or high-entropy values are still reported.
+# No path condition: a path-only allowlist would silence every rule in those files.
+[[allowlists]]
+description = "Snake_case answer-field names mistaken for generic API keys"
+targetRules = ["generic-api-key"]
+regexTarget = "match"
+regexes = ['''^key = "[a-z0-9_]+"$''']
